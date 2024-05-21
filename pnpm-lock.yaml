@@ -8,12 +8,21 @@ dependencies:
   chart.js:
     specifier: ^4.4.3
     version: 4.4.3
+  chartjs-adapter-luxon:
+    specifier: ^1.3.1
+    version: 1.3.1(chart.js@4.4.3)(luxon@3.4.4)
   date-fns:
     specifier: ^3.6.0
     version: 3.6.0
   dotenv:
     specifier: ^16.4.5
     version: 16.4.5
+  luxon:
+    specifier: ^3.4.4
+    version: 3.4.4
+  moment:
+    specifier: ^2.30.1
+    version: 2.30.1
   pg:
     specifier: ^8.11.5
     version: 8.11.5
@@ -37,6 +46,9 @@ devDependencies:
   '@types/eslint':
     specifier: ^8.56.0
     version: 8.56.10
+  '@types/luxon':
+    specifier: ^3.4.2
+    version: 3.4.2
   '@types/pg':
     specifier: ^8.11.6
     version: 8.11.6
@@ -699,6 +711,10 @@ packages:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
     dev: true
 
+  /@types/luxon@3.4.2:
+    resolution: {integrity: sha512-TifLZlFudklWlMBfhubvgqTXRzLDI5pCbGa4P8a3wPyUQSW+1xQ5eDsreP9DWHX3tjq1ke96uYG/nwundroWcA==}
+    dev: true
+
   /@types/node@20.12.12:
     resolution: {integrity: sha512-eWLDGF/FOSPtAvEqeRAQ4C8LSA7M1I7i0ky1I8U7kD1J5ITyW3AsRhQrKVoWf5pFKZ2kILsEGJhsI9r93PYnOw==}
     dependencies:
@@ -1088,6 +1104,16 @@ packages:
     engines: {pnpm: '>=8'}
     dependencies:
       '@kurkle/color': 0.3.2
+    dev: false
+
+  /chartjs-adapter-luxon@1.3.1(chart.js@4.4.3)(luxon@3.4.4):
+    resolution: {integrity: sha512-yxHov3X8y+reIibl1o+j18xzrcdddCLqsXhriV2+aQ4hCR66IYFchlRXUvrJVoxglJ380pgytU7YWtoqdIgqhg==}
+    peerDependencies:
+      chart.js: '>=3.0.0'
+      luxon: '>=1.0.0'
+    dependencies:
+      chart.js: 4.4.3
+      luxon: 3.4.4
     dev: false
 
   /check-error@1.0.3:
@@ -1908,6 +1934,11 @@ packages:
     engines: {node: 14 || >=16.14}
     dev: true
 
+  /luxon@3.4.4:
+    resolution: {integrity: sha512-zobTr7akeGHnv7eBOXcRgMeCP6+uyYsczwmeRCauvpvaAltgNyTbLH/+VaEAPUeWBT+1GuNmz4wC/6jtQzbbVA==}
+    engines: {node: '>=12'}
+    dev: false
+
   /magic-string@0.30.10:
     resolution: {integrity: sha512-iIRwTIf0QKV3UAnYK4PU8uiEc4SRh5jX0mwpIwETPpHdhVM4f53RSwS/vXvN1JhGX+Cs7B8qIq3d6AH49O5fAQ==}
     dependencies:
@@ -1982,6 +2013,10 @@ packages:
       pkg-types: 1.1.1
       ufo: 1.5.3
     dev: true
+
+  /moment@2.30.1:
+    resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
+    dev: false
 
   /mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}

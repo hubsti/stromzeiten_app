@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 interface ApiResponse {
     [key: string]: number;
 }
@@ -11,83 +12,6 @@ interface ForecastApiResponse {
     time: string;
     Cei_prediction: number;
 }
-
-
-export const european_countries = [
-    ["Austria", "AT", "Vienna", "Europe/Brussels"],
-    ["Belgium", "BE", "Brussels", "Europe/Brussels"],
-    ["Bosnia and Herzegovina", "BA", "Sarajevo", "Europe/Belgrade"],
-    ["Bulgaria", "BG", "Sofia", "Europe/Sofia"],
-    ["Croatia", "HR", "Zagreb", "Europe/Belgrade"],
-    ["Czech Republic", "CZ", "Prague", "Europe/Prague"],
-    ["Denmark", "DK", "Copenhagen", "Europe/Copenhagen"], 
-    ["Estonia", "EE", "Tallinn", "Europe/Tallinn"],
-    ["Finland", "FI", "Helsinki", "Europe/Helsinki"],
-    ["France", "FR", "Paris", "Europe/Paris"],
-    ["Germany", "DE", "Berlin", "Europe/Berlin"], 
-    ["Greece", "GR", "Athens", "Europe/Athens"],
-    ["Hungary", "HU", "Budapest", "Europe/Budapest"],
-    ["Ireland", "IE", "Dublin", "Europe/Dublin"], 
-    ["Italy", "IT", "Rome", "Europe/Rome"], 
-    ["Kosovo", "XK", "Pristina", "Europe/Belgrade"], 
-    ["Latvia", "LV", "Riga", "Europe/Riga"],
-    ["Lithuania", "LT", "Vilnius", "Europe/Vilnius"],
-    ["Luxembourg", "LU", "Luxembourg", "Europe/Luxembourg"], 
-    ["Moldova", "MD", "Chisinau", "Europe/Chisinau"], 
-    ["Montenegro", "ME", "Podgorica", "Europe/Belgrade"],
-    ["Netherlands", "NL", "Amsterdam", "Europe/Amsterdam"],
-    ["North Macedonia", "MK", "Skopje", "Europe/Belgrade"],
-    ["Norway", "NO", "Oslo", "Europe/Oslo"], 
-    ["Poland", "PL", "Warsaw", "Europe/Warsaw"],
-    ["Portugal", "PT", "Lisbon", "Europe/Lisbon"],
-    ["Romania", "RO", "Bucharest", "Europe/Bucharest"],
-    ["Serbia", "RS", "Belgrade", "Europe/Belgrade"],
-    ["Slovakia", "SK", "Bratislava", "Europe/Bratislava"],
-    ["Slovenia", "SI", "Ljubljana", "Europe/Ljubljana"],
-    ["Spain", "ES", "Madrid", "Europe/Madrid"],
-    ["Sweden", "SE", "Stockholm", "Europe/Stockholm"], 
-    ["Switzerland", "CH", "Bern", "Europe/Zurich"],
-];
-
-export const countryFlags: { [key: string]: string } = {
-    'Austria': '🇦🇹',
-    'Belgium': '🇧🇪',
-    'Bosnia and Herzegovina': '🇧🇦',
-    'Bulgaria': '🇧🇬',
-    'Croatia': '🇭🇷',
-    'Czech Republic': '🇨🇿',
-    'Denmark': '🇩🇰',
-    'Estonia': '🇪🇪',
-    'Finland': '🇫🇮',
-    'France': '🇫🇷',
-    'Germany': '🇩🇪',
-    'Greece': '🇬🇷',
-    'Hungary': '🇭🇺',
-    'Ireland': '🇮🇪',
-    'Italy': '🇮🇹',
-    'Kosovo': '🇽🇰',
-    'Latvia': '🇱🇻',
-    'Lithuania': '🇱🇹',
-    'Luxembourg': '🇱🇺',
-    'Malta': '🇲🇹',
-    'Moldova': '🇲🇩',
-    'Montenegro': '🇲🇪',
-    'Netherlands': '🇳🇱',
-    'North Macedonia': '🇲🇰',
-    'Norway': '🇳🇴',
-    'Poland': '🇵🇱',
-    'Portugal': '🇵🇹',
-    'Romania': '🇷🇴',
-    'San Marino': '🇸🇲',
-    'Serbia': '🇷🇸',
-    'Slovakia': '🇸🇰',
-    'Slovenia': '🇸🇮',
-    'Spain': '🇪🇸',
-    'Sweden': '🇸🇪',
-    'Switzerland': '🇨🇭',
-    'Turkey': '🇹🇷',
-    'Ukraine': '🇺🇦',}
-
 
 export interface LowestIntensityPeriod {
     start: string;
@@ -125,8 +49,43 @@ export function formatDataForPieChart(dataPromise: Promise<any>): Promise<any> {
 
 export function formatDataForAreaChart(dataPromise: Promise<any>): Promise<any> {
     return dataPromise.then((jsonData) => {
-        let labels = jsonData.map((item: { index: any; }) => item.index);
+        let labels = jsonData.map((item: { index: any; }) => DateTime.fromISO(item.index).toJSDate());
         let carbonIntensityValues = jsonData.map((item: { Carbon_Intensity_CEI: any; }) => item.Carbon_Intensity_CEI);
         return { labels, carbonIntensityValues };
+    });
+}
+
+
+export function calculateEnergyPercentages(apiPromise: Promise<ApiResponse>): Promise<{ renewable: number, nonRenewable: number, nuclear: number }> {
+    return apiPromise.then((jsonData) => {
+        const data = jsonData;
+        let entries = Object.entries(data);
+        entries.shift(); // remove first entry
+        entries.pop(); // remove last entry
+
+        let formatteddata = Object.fromEntries(entries);
+
+        const renewableSources: (keyof GenerationApiResponse)[] = ["biomass", "hydro_storage", "hydro", "solar", "wind_off", "wind_on"];
+        const nonRenewableSources: (keyof GenerationApiResponse)[] = ["gas", "other", "waste", "coal", "lignite", "oil"];
+        const nuclearSources: (keyof GenerationApiResponse)[] = ["nuclear"];
+
+        const totalEnergy = Object.values(formatteddata).reduce((a, b) => a + b, 0);
+
+
+        const renewableEnergy = renewableSources.reduce((total, source) => total + (formatteddata[source] || 0), 0);
+        const nonRenewableEnergy = nonRenewableSources.reduce((total, source) => total + (formatteddata[source] || 0), 0);
+        const nuclearEnergy = nuclearSources.reduce((total, source) => total + (formatteddata[source] || 0), 0);
+
+        const renewablePercentage = Math.round((renewableEnergy / totalEnergy) * 100);
+        const nonRenewablePercentage = Math.round((nonRenewableEnergy / totalEnergy) * 100);
+        const nuclearPercentage = Math.round((nuclearEnergy / totalEnergy) * 100);
+
+
+        
+        return {
+            renewable: renewablePercentage,
+            nonRenewable: nonRenewablePercentage,
+            nuclear: nuclearPercentage
+        };
     });
 }

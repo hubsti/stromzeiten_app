@@ -28,11 +28,7 @@
 			},
 			options: {
 				animation: false,
-				scales: {
-					y: {
-						beginAtZero: true
-					}
-				}
+
 			}
 		});
 	}

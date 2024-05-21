@@ -1,7 +1,7 @@
 import client from '$lib/utils/db';
 import { json } from '@sveltejs/kit';
 import { subHours, format } from 'date-fns';
-import { european_countries } from '$lib/utils/dataprocessor';
+import { european_countries } from '$lib/utils/countries';
 
 
 export async function GET(event) {

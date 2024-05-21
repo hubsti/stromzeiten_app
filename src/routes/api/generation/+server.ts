@@ -1,17 +1,17 @@
 import client from '$lib/utils/db';
 import { json } from '@sveltejs/kit';
-import { european_countries } from '$lib/utils/dataprocessor';
+import { european_countries } from '$lib/utils/countries';
 export async function GET(event) {
 	try {
-		const country = String(event.url.searchParams.get('country') ?? 'Belgium');
-		const countries_link: { [key: string]: string } = {};
 		
+		const country = String(event.url.searchParams.get('country') ?? 'Belgium');
+		const countries_link: { [key: string]: string } = {};	
 		european_countries.forEach(([name, code]) => {
 			countries_link[name] = code;
 		});
-
-
 		const country_code = countries_link[country as keyof typeof countries_link];
+		
+		
 		const result = await client.query(
 			`select * from generation where country_code='${country_code}' ORDER By index ASC LIMIT 1`
 		);
