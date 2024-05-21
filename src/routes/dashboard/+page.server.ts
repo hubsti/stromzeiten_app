@@ -4,32 +4,16 @@ import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async (event) => {
 
-    async function fetchUsers() {
-        const result = await fetch(
-            "https://dummyjson.com/users?select=age,firstName,lastName,weight,height&limit=10"
-        );
-
-        const { users } = await result.json();
-
-        if (!Array.isArray(users)) {
-            return [];
-        }
-
-        let validatedUsers: User[] = [];
-
-        for (let user of users) {
-            if (!validateUser(user)) {
-                console.log(user);
-                return [];
-            }
-
-            validatedUsers.push(user);
-        }
-
-        return validatedUsers;
+    const generation = async () => {
+        const response = await event.fetch(`/api/generation?country=Belgium`)
+        
+        return response
     }
 
+
     return {
-        users: await fetchUsers(),
-    };
+        streamed: {
+            generation: generation().then(d => d.json()).catch((error) => console.log(error)),
+        },
+    }
 }
