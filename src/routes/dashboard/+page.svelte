@@ -5,18 +5,20 @@
 	import Table from '$lib/components/Table.svelte';
 	import AreaChart from '$lib/components/AreaChart.svelte';
 	import PieChart from '$lib/components/PieChart.svelte';
-	import { calculateEnergyPercentages, formatDataForAreaChart, formatDataForPieChart } from '$lib/utils/dataprocessor';
+	import { calculateEnergyDifferences, calculateEnergyPercentages, formatDataForAreaChart, formatDataForPieChart } from '$lib/utils/dataprocessor';
 	export let data: PageData;
 
 	$: energyPercentagesResponse = calculateEnergyPercentages(data.streamed.generation);
+	$: energyDifffernceResponse = calculateEnergyDifferences(data.streamed.generation_diff);
 	$: piechartdata = formatDataForPieChart(data.streamed.generation);
-	$: areachartdata = formatDataForAreaChart(data.streamed.carbon_intensity);
+	$: areachartdata = formatDataForAreaChart(data.streamed.carbon_intensity, data.streamed.forecast, data.streamed.averge_cei);
+
 </script>
 
 <div class="container h-full mx-auto max-w-fit bg-base-150">
 	<div class="grid grid-cols-7 gap-4">
 		<div class="col-span-7">
-			<Stats emissions={data.streamed.dashboard} energyPercentages={energyPercentagesResponse} />
+			<Stats emissions={data.streamed.dashboard} energyPercentages={energyPercentagesResponse} energyDifferences={energyDifffernceResponse} />
 		</div>
 		<div class="col-span-3">
 			<Table />
@@ -26,7 +28,7 @@
 		{#await areachartdata}
 			loading
 		{:then value}
-			<AreaChart labels={value.labels} ceidata={value.carbonIntensityValues} />
+			<AreaChart labels={value.labels_sorted} ceidata={value.ceiValues} ceiPrediction={value.ceiPredictionValues} averagecei={value.avg}/>
 		{:catch error}
 			Error loading data
 		{/await}

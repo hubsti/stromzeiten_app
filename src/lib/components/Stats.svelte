@@ -1,6 +1,19 @@
 <script lang="ts">
 	export let emissions: Promise<any>;
 	export let energyPercentages: Promise<any>;
+	export let energyDifferences: Promise<any>;
+	const currentDate = new Date();
+	const formattedDate = currentDate.toLocaleString('en-GB', {
+		day: 'numeric',
+		//weekday: 'long',
+		//year: 'numeric',
+		month: 'long'
+	});
+	const formattedTime = currentDate.toLocaleString('en-GB', {
+		hour: 'numeric',
+		minute: 'numeric',
+		hour12: false
+	});
 </script>
 
 <div class="card bg-base-100 shadow">
@@ -24,7 +37,16 @@
 						/>
 					</svg>
 				</div>
-				<div class="stat-title">On 5th May 2023 at 14:00</div>
+				<!-- <div class="stat-title">On 5th May 2023 at 14:00</div> -->
+
+				{#await emissions}
+					<div>loading data</div>
+				{:then value}
+					<div class="stat-title">On {formattedDate} at {value.time}</div>
+				{:catch error}
+					<h6>Error loading data</h6>
+				{/await}
+
 				<div class="flex flex-row">
 					{#await emissions}
 						<div>loading data</div>
@@ -67,7 +89,13 @@
 				{:catch error}
 					<h6>Error loading data</h6>
 				{/await}
-				<div class="stat-desc">↘︎ 2MW</div>
+				{#await energyDifferences}
+					<div>loading data</div>
+				{:then value}
+					<div class="stat-desc">↘︎ {value.nonRenewable} MW</div>
+				{:catch error}
+					<h6>Error loading data</h6>
+				{/await}
 			</div>
 
 			<div class="stat">
@@ -98,7 +126,13 @@
 				{:catch error}
 					<h6>Error loading data</h6>
 				{/await}
-				<div class="stat-desc">↗︎ 12MW</div>
+				{#await energyDifferences}
+					<div>loading data</div>
+				{:then value}
+					<div class="stat-desc">↘︎ {value.renewable} MW</div>
+				{:catch error}
+					<h6>Error loading data</h6>
+				{/await}
 			</div>
 
 			<div class="stat">
@@ -128,7 +162,13 @@
 				{:catch error}
 					<h6>Error loading data</h6>
 				{/await}
-				<div class="stat-desc">↘︎ 90MW (14%)</div>
+				{#await energyDifferences}
+					<div>loading data</div>
+				{:then value}
+					<div class="stat-desc">↘︎ {value.nuclear} MW</div>
+				{:catch error}
+					<h6>Error loading data</h6>
+				{/await}
 			</div>
 		</div>
 	</div>

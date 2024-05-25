@@ -13,7 +13,7 @@ export async function GET(event) {
 		
 		
 		const result = await client.query(
-			`select * from generation where country_code='${country_code}' ORDER By index ASC LIMIT 1`
+			`select * from generation where country_code='${country_code}' ORDER By index DESC LIMIT 1`
 		);
 
 		event.setHeaders({
