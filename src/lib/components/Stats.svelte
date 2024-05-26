@@ -85,14 +85,23 @@
 				{#await energyPercentages}
 					<div>loading data</div>
 				{:then value}
-					<div class="stat-value">{value.nonRenewable}%</div>
+					<div class="flex flex-row">
+						<div class="stat-value">{value.nonRenewableabs} MW</div>
+						{#await energyDifferences}
+							<div>loading data</div>
+						{:then value}
+							<div class="badge badge-accent ml-4 mt-2">↑ {value.nonRenewable}MW</div>
+						{:catch error}
+							<h6>Error loading data</h6>
+						{/await}
+					</div>
 				{:catch error}
 					<h6>Error loading data</h6>
 				{/await}
-				{#await energyDifferences}
+				{#await energyPercentages}
 					<div>loading data</div>
 				{:then value}
-					<div class="stat-desc">↘︎ {value.nonRenewable} MW</div>
+					<div class="stat-desc">{value.nonRenewable}% of available electricity</div>
 				{:catch error}
 					<h6>Error loading data</h6>
 				{/await}
@@ -122,14 +131,23 @@
 				{#await energyPercentages}
 					<div>loading data</div>
 				{:then value}
-					<div class="stat-value">{value.renewable}%</div>
+					<div class="flex flex-row">
+						<div class="stat-value">{value.renewableabs} MW</div>
+						{#await energyDifferences}
+							<div>loading data</div>
+						{:then value}
+							<div class="badge badge-accent ml-4 mt-2">↑ {value.renewable}MW</div>
+						{:catch error}
+							<h6>Error loading data</h6>
+						{/await}
+					</div>
 				{:catch error}
 					<h6>Error loading data</h6>
 				{/await}
-				{#await energyDifferences}
+				{#await energyPercentages}
 					<div>loading data</div>
 				{:then value}
-					<div class="stat-desc">↘︎ {value.renewable} MW</div>
+					<div class="stat-desc">{value.renewable}% of available electricity</div>
 				{:catch error}
 					<h6>Error loading data</h6>
 				{/await}
@@ -158,14 +176,23 @@
 				{#await energyPercentages}
 					<div>loading data</div>
 				{:then value}
-					<div class="stat-value">{value.nuclear}%</div>
+					<div class="flex flex-row">
+						<div class="stat-value">{value.nuclearabs} MW</div>
+						{#await energyDifferences}
+							<div>loading data</div>
+						{:then value}
+							<div class="badge badge-accent ml-4 mt-2">↑ {value.nuclear}MW</div>
+						{:catch error}
+							<h6>Error loading data</h6>
+						{/await}
+					</div>
 				{:catch error}
 					<h6>Error loading data</h6>
 				{/await}
-				{#await energyDifferences}
+				{#await energyPercentages}
 					<div>loading data</div>
 				{:then value}
-					<div class="stat-desc">↘︎ {value.nuclear} MW</div>
+					<div class="stat-desc">{value.nuclear}% of available electricity</div>
 				{:catch error}
 					<h6>Error loading data</h6>
 				{/await}

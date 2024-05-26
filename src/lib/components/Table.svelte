@@ -1,34 +1,49 @@
-			<div class="card w-96 bg-base-100 shadow h-full">
-				<div class="card-body">
-					<h2 class="card-title">Forecast</h2>
-					<div class="overflow-x-auto">
-						<table class="table text-lg">
-							<!-- head -->
-							<thead>
-								<tr class='text-lg'>
-									<th>Day</th>
-									<th>Time Period</th>
-								</tr>
-							</thead>
-							<tbody>
-								<!-- row 1 -->
-								<tr>
-									<td>Monday</td>
-									<td>12:00-15:45 <br/>
-                                        12:23-23:23</td>
-								</tr>
-								<!-- row 2 -->
-								<tr>
-									<td>Tuesday</td>
-									<td>12:00-15:45</td>
-								</tr>
-								<!-- row 3 -->
-								<tr>
-									<td>Wednesday</td>
-									<td>12:00-15:45</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
+<script lang="ts">
+import { bluePeriodsStore } from "$lib/store";
+import { DateTime } from 'luxon';
+
+let bluePeriods: any[] = [];
+
+// Subscribe to the store to get the blue periods
+bluePeriodsStore.subscribe(value => {
+  bluePeriods = value;
+  console.log(bluePeriods);
+});
+
+
+
+function getDayOfWeek(dateStr: string) {
+	console.log(dateStr);
+	const isoStr = new Date(dateStr).toISOString();
+	let debug = DateTime.fromISO(isoStr).toFormat('cccc');
+	console.log(debug);	
+  return debug;
+}
+
+// Helper function to get the day of the week
+
+// Group periods by day of the week
+$: periodsByDay = bluePeriods.reduce((acc, period) => {
+  const day = getDayOfWeek(period.start);
+  if (!acc[day]) acc[day] = [];
+  acc[day].push(period);
+  console.log(acc);
+  return acc;
+}, {});
+</script>
+
+<div class="card w-96 bg-base-100 shadow h-full">
+  <div class="card-body">
+    <h2 class="card-title">Forecast</h2>
+    <div class="stats stats-vertical">
+      {#each Object.keys(periodsByDay) as day}
+        <div class="stat">
+          <div class="stat-title m-2">{day}</div>
+          {#each periodsByDay[day] as period}
+            <div class="stat-value m-2">{DateTime.fromISO(new Date(period.start).toISOString()).toFormat('HH:mm')} - {DateTime.fromISO(new Date(period.end).toISOString()).toFormat('HH:mm')}</div>
+          {/each}
+        </div>
+      {/each}
+    </div>
+  </div>
+</div>

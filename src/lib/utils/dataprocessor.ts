@@ -48,9 +48,9 @@ export function formatDataForPieChart(dataPromise: Promise<any>): Promise<any> {
 
 
 export function formatDataForAreaChart(dataPromise: Promise<any>, dataPromise2: Promise<any>, dataPromise3: Promise<any>): Promise<any> {
-    return Promise.all([dataPromise, dataPromise2,dataPromise3]).then(([jsonData, jsonData2, jsonData3]) => {
+    return Promise.all([dataPromise, dataPromise2, dataPromise3]).then(([jsonData, jsonData2, jsonData3]) => {
 
-    
+
 
         let labels: string[] = [];
         let ceiValues: number[] = [];
@@ -63,6 +63,8 @@ export function formatDataForAreaChart(dataPromise: Promise<any>, dataPromise2: 
             ceiValues.push(item.Carbon_Intensity_CEI);
         });
 
+        //console.log(ceiValues[ceiValues.length - 1]);
+
         jsonData2.forEach((item: { time: string; Cei_prediction: number; }) => {
             if (!ceiMap.has(item.time)) {
                 labels.push(item.time);
@@ -73,26 +75,26 @@ export function formatDataForAreaChart(dataPromise: Promise<any>, dataPromise2: 
         // Sort labels to ensure they are in chronological order
         let labels_sorted
         labels.sort((a, b) => DateTime.fromISO(a).toJSDate().getTime() - DateTime.fromISO(b).toJSDate().getTime());
-        labels_sorted = labels.map(label => DateTime.fromISO(label).toJSDate());
-
+        
         // Set the last value of ceiValues to be the same as the first value of ceiPredictionValues
         if (ceiPredictionValues.length > 0) {
-            ceiValues[ceiValues.length - 1] = ceiPredictionValues[0];
+            ceiPredictionValues[0] = ceiValues[ceiValues.length - 1];
         }
-
+        //console.log(ceiValues[ceiValues.length - 1]);
         // Add NaN to the beginning of ceiPredictionValues
         ceiPredictionValues.unshift(NaN);
-
+        
         // Ensure ceiPredictionValues is the same length as labels
         while (ceiPredictionValues.length < labels.length) {
             ceiPredictionValues.unshift(NaN);
         }
+        labels_sorted = labels.map(label => DateTime.fromISO(label).toJSDate());
 
         //console.log('Labels:', labels_sorted);
-        //console.log('CEI Values:', ceiValues);
+       // console.log('CEI Values:', ceiValues);
         //console.log('CEI Prediction Values:', ceiPredictionValues);
         let avg = jsonData3.average_cei;
-        
+
         return { labels_sorted, ceiValues, ceiPredictionValues, avg };
     });
 }
@@ -127,7 +129,10 @@ export function calculateEnergyPercentages(apiPromise: Promise<ApiResponse>): Pr
         return {
             renewable: renewablePercentage,
             nonRenewable: nonRenewablePercentage,
-            nuclear: nuclearPercentage
+            nuclear: nuclearPercentage,
+            renewableabs: renewableEnergy,
+            nonRenewableabs: nonRenewableEnergy,
+            nuclearabs: nuclearEnergy
         };
     });
 
@@ -156,6 +161,4 @@ export function calculateEnergyDifferences(apiPromise: Promise<ApiResponse>): Pr
             nuclear: nuclearEnergy
         };
     });
-
-
 }

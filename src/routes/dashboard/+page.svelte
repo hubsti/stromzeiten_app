@@ -16,15 +16,16 @@
 </script>
 
 <div class="container h-full mx-auto max-w-fit bg-base-150">
+	
 	<div class="grid grid-cols-7 gap-4">
 		<div class="col-span-7">
 			<Stats emissions={data.streamed.dashboard} energyPercentages={energyPercentagesResponse} energyDifferences={energyDifffernceResponse} />
 		</div>
-		<div class="col-span-3">
+		<div class="col-span-2">
 			<Table />
 		</div>
 
-		<div class="col-span-4">
+		<div class="col-span-5">
 		{#await areachartdata}
 			loading
 		{:then value}
