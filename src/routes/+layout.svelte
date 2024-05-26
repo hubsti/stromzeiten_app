@@ -1,9 +1,23 @@
-<script>
+<script lang="ts">
 	import 'tailwindcss/tailwind.css';
+	import { countryFlags, european_countries } from '$lib/utils/countries';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { goto } from '$app/navigation';
+	import { enhance } from '$app/forms';
+
+	const submitUpdateCountry: SubmitFunction = ({ action }) => {
+		const country = action.searchParams.get('country');
+	};
+	export let selectedOption: string;
+	function handleChange(event: any) {
+		selectedOption = event.target.value;
+		goto(`/?/setCountry&country=${encodeURIComponent(selectedOption)}`);
+	}
 </script>
 
 <div class="navbar w-full bg-base-100 shadow mb-5">
 	<div class="flex-1 px-2 lg:flex-none">
+		<!-- svelte-ignore a11y-missing-attribute -->
 		<a class="btn btn-ghost text-xl">Stromzeiten</a>
 	</div>
 	<div class="flex justify-end flex-1 px-2">
@@ -32,14 +46,15 @@
 					/></svg
 				>
 			</label>
+			<!-- svelte-ignore a11y-missing-attribute -->
 			<a class="btn btn-ghost rounded-btn">
 				<svg
-						width="20"
-						height="20"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						class="h-5 w-5 stroke-current md:hidden"
+					width="20"
+					height="20"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					class="h-5 w-5 stroke-current md:hidden"
 				>
 					<path
 						stroke="currentColor"
@@ -49,7 +64,7 @@
 						d="M9.529 9.988a2.502 2.502 0 1 1 5 .191A2.441 2.441 0 0 1 12 12.582V14m-.01 3.008H12M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
 					/>
 				</svg>
-        <span class="hidden font-normal md:inline">About</span>
+				<span class="hidden font-normal md:inline">About</span>
 			</a>
 			<div title="Choose country" class="dropdown dropdown-end">
 				<div tabindex="0" role="button" class="btn btn-ghost rounded-btn">
@@ -70,11 +85,27 @@
 					<span class="hidden font-normal md:inline">Country</span>
 				</div>
 
+				<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 				<ul
 					tabindex="0"
 					class="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-t-none w-52 mt-4"
 				>
+				<form method="POST" use:enhance={submitUpdateCountry}>
+					{#each european_countries as country (country[1])}
+						<li>
+							<button
+								formaction={`/?/setCountry&country=${country[0]}`}
+								name="country"
+								value={country[0]}
+								><span class="flex-auto text-left">{country[0]} {countryFlags[country[0]]}</span
+								></button
+							>
+						</li>
+					{/each}
+					</form>
+					<!-- svelte-ignore a11y-missing-attribute -->
 					<li><a>Item 1</a></li>
+					<!-- svelte-ignore a11y-missing-attribute -->
 					<li><a>Item 2</a></li>
 				</ul>
 			</div>
@@ -85,7 +116,7 @@
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 16 16"
 					fill="currentColor"
-						class="h-5 w-5 stroke-current md:hidden"
+					class="h-5 w-5 stroke-current md:hidden"
 					><path
 						fill-rule="evenodd"
 						d="M11 5a.75.75 0 0 1 .688.452l3.25 7.5a.75.75 0 1 1-1.376.596L12.89 12H9.109l-.67 1.548a.75.75 0 1 1-1.377-.596l3.25-7.5A.75.75 0 0 1 11 5Zm-1.24 5.5h2.48L11 7.636 9.76 10.5ZM5 1a.75.75 0 0 1 .75.75v1.261a25.27 25.27 0 0 1 2.598.211.75.75 0 1 1-.2 1.487c-.22-.03-.44-.056-.662-.08A12.939 12.939 0 0 1 5.92 8.058c.237.304.488.595.752.873a.75.75 0 0 1-1.086 1.035A13.075 13.075 0 0 1 5 9.307a13.068 13.068 0 0 1-2.841 2.546.75.75 0 0 1-.827-1.252A11.566 11.566 0 0 0 4.08 8.057a12.991 12.991 0 0 1-.554-.938.75.75 0 1 1 1.323-.707c.049.09.099.181.15.271.388-.68.708-1.405.952-2.164a23.941 23.941 0 0 0-4.1.19.75.75 0 0 1-.2-1.487c.853-.114 1.72-.185 2.598-.211V1.75A.75.75 0 0 1 5 1Z"
@@ -94,6 +125,7 @@
 				>
 				<span class="hidden font-normal md:inline">Language</span>
 			</div>
+			<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 			<ul
 				tabindex="0"
 				class="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-t-none w-52 mt-4"
@@ -106,9 +138,10 @@
 </div>
 
 <slot />
-<footer class="footer footer-center p-5 bg-base-200 text-base-content rounded bottom-0 left-0 w-full">
-
-  <aside>
-    <p>Copyright © 2024 - All right reserved by ACME Industries Ltd</p>
-  </aside>
+<footer
+	class="footer footer-center p-5 bg-base-200 text-base-content rounded bottom-0 left-0 w-full"
+>
+	<aside>
+		<p>Copyright © 2024 - All right reserved by ACME Industries Ltd</p>
+	</aside>
 </footer>

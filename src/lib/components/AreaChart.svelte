@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { bluePeriodsStore } from '$lib/store';
+	import { bluePeriodsStore, threedayavg} from '$lib/store';
 	import { draw, fade } from 'svelte/transition';
 	import Chart, { type ChartArea } from 'chart.js/auto';
 	import 'chartjs-adapter-luxon';
@@ -25,40 +25,25 @@
 		height: number,
 		gradient: { addColorStop: (arg0: number, arg1: string) => void };
 
-	const annotation = {
-		type: 'line',
-		borderColor: 'black',
-		borderDash: [6, 6],
-		borderDashOffset: 0,
-		borderWidth: 1,
-		label: {
-			display: true,
-			drawTime: 'afterDatasetsDraw',
-			content: 'Average: ' + averagecei.toFixed(2),
-			position: 'end'
-		},
-		scaleID: 'y',
-		value: averagecei
-	};
-
-	const annotation2 = {
-		type: 'line',
-		borderColor: 'black',
-		borderDash: [6, 6],
-		borderDashOffset: 0,
-		borderWidth: 1,
-		label: {
-			display: true,
-			content: 'Live: ' + ceidata[ceidata.length - 1].toFixed(2),
+		
+		const annotation2 = {
+			type: 'line',
+			borderColor: 'black',
+			borderDash: [6, 6],
+			borderDashOffset: 0,
+			borderWidth: 1,
+			label: {
+				display: true,
+				content: 'Live: ' + ceidata[ceidata.length - 1].toFixed(2),
 			position: 'end'
 		},
 		scaleID: 'x',
 		value: labels[ceidata.length - 1]
 	};
-
+	
 	let ctx: HTMLCanvasElement | undefined;
 	let chart: Chart | undefined;
-
+	
 	function getGradient(ctx: CanvasRenderingContext2D, chartArea: ChartArea) {
 		const chartWidth = chartArea.right - chartArea.left;
 		const chartHeight = chartArea.bottom - chartArea.top;
@@ -72,10 +57,10 @@
 			gradient.addColorStop(0.5, CHART_COLORS.yellow);
 			gradient.addColorStop(1, CHART_COLORS.red);
 		}
-
+		
 		return gradient;
 	}
-
+	
 	function getColorStopForIndex(index: number, totalPoints: number): string {
 		const stop = index / (totalPoints - 1);
 		if (stop <= 0.5) {
@@ -91,18 +76,34 @@
 		const sum = validData.reduce((acc, value) => acc + value, 0);
 		return validData.length ? sum / validData.length : 0;
 	}
-
+	
 	const averageCEI = calculateAverage(ceidata);
 	const averageCEIPrediction = calculateAverage(ceiPrediction);
 	const BLUE_THRESHOLD = (averageCEI + averageCEIPrediction) / 2; //
+	threedayavg.set(BLUE_THRESHOLD);
 	//console.log('Average CEI:', averageCEI);
 	//console.log('Average CEI Prediction:', averageCEIPrediction);
 	//console.log('Blue threshold:', BLUE_THRESHOLD);
+	const annotation = {
+		type: 'line',
+		borderColor: 'black',
+		borderDash: [6, 6],
+		borderDashOffset: 0,
+		borderWidth: 1,
+		label: {
+			display: true,
+			drawTime: 'afterDatasetsDraw',
+			content: '3 day average: ' + BLUE_THRESHOLD.toFixed(2),
+			position: 'end'
+		},
+		scaleID: 'y',
+		value: BLUE_THRESHOLD
+	};
 	function findBluePeriods(data: any[], labels: string | any[]) {
 		let periods = [];
 		let start: any = null;
 		let today = DateTime.local().startOf('day');
-
+		
 		data.forEach((value, index) => {
 			if (value <= BLUE_THRESHOLD) {
 				if (start === null) {

@@ -35,6 +35,9 @@ $: periodsByDay = bluePeriods.reduce((acc, period) => {
 <div class="card w-96 bg-base-100 shadow h-full">
   <div class="card-body">
     <h2 class="card-title">Forecast</h2>
+	<div class = "flex flex-row">
+	<div class="stat-title">Next slots to plug in 
+	</div>🔌:</div>
     <div class="stats stats-vertical">
       {#each Object.keys(periodsByDay) as day}
         <div class="stat">

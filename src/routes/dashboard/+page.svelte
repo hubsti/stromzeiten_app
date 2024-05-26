@@ -19,7 +19,7 @@
 	
 	<div class="grid grid-cols-7 gap-4">
 		<div class="col-span-7">
-			<Stats emissions={data.streamed.dashboard} energyPercentages={energyPercentagesResponse} energyDifferences={energyDifffernceResponse} />
+			<Stats country = {data.country} emissions={data.streamed.dashboard} energyPercentages={energyPercentagesResponse} energyDifferences={data.streamed.generation_diff} />
 		</div>
 		<div class="col-span-2">
 			<Table />

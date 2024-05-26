@@ -1,7 +1,19 @@
 <script lang="ts">
+	import { countryFlags } from '$lib/utils/countries';
+	import { threedayavg } from '$lib/store';
+	export let country;
 	export let emissions: Promise<any>;
 	export let energyPercentages: Promise<any>;
 	export let energyDifferences: Promise<any>;
+
+	let threedayavgstat : number;
+
+	// Subscribe to the store to get the blue periods
+	threedayavg.subscribe((value) => {
+		threedayavgstat = Number(value);
+		//console.log(bluePeriods);
+	});
+
 	const currentDate = new Date();
 	const formattedDate = currentDate.toLocaleString('en-GB', {
 		day: 'numeric',
@@ -18,7 +30,12 @@
 
 <div class="card bg-base-100 shadow">
 	<div class="card-body">
-		<h2 class="card-title">Carbon intensity in France 🇫🇷</h2>
+		{#if countryFlags[country]}
+			<h2 class="card-title">Carbon intensity in {country} {countryFlags[country]}</h2>
+		{:else}
+			Carbon intensity in 🌍
+		{/if}
+
 		<div class="stats">
 			<div class="stat">
 				<div class="stat-figure text-secondary mt-1">
@@ -55,7 +72,20 @@
 					{:catch error}
 						<h6>Error loading data</h6>
 					{/await}
-					<div class="stat-value mx-6">Good</div>
+
+					{#await emissions}
+						<div>loading data</div>
+					{:then value}
+						{#if value.Carbon_Intensity_CEI >= 1.2 * threedayavgstat}
+							<div class="stat-value mx-6">Poor</div>
+						{:else if value.Carbon_Intensity_CEI < 1.2 * threedayavgstat && value.Carbon_Intensity_CEI >= 0.8 * threedayavgstat}
+							<div class="stat-value mx-6">Moderate</div>
+						{:else}
+							<div class="stat-value mx-6">Good</div>
+						{/if}
+					{:catch error}
+						<h6>Error loading data</h6>
+					{/await}
 				</div>
 
 				<div class="stat-desc">gCO₂eq/kWh</div>
@@ -90,7 +120,7 @@
 						{#await energyDifferences}
 							<div>loading data</div>
 						{:then value}
-							<div class="badge badge-accent ml-4 mt-2">↑ {value.nonRenewable}MW</div>
+							<div class="badge bg-green-100 t ml-4 mt-2">↑ {value.nonRenewable}%</div>
 						{:catch error}
 							<h6>Error loading data</h6>
 						{/await}
@@ -136,7 +166,7 @@
 						{#await energyDifferences}
 							<div>loading data</div>
 						{:then value}
-							<div class="badge badge-accent ml-4 mt-2">↑ {value.renewable}MW</div>
+							<div class="badge badge-accent ml-4 mt-2">↑ {value.renewable}%</div>
 						{:catch error}
 							<h6>Error loading data</h6>
 						{/await}
@@ -181,7 +211,7 @@
 						{#await energyDifferences}
 							<div>loading data</div>
 						{:then value}
-							<div class="badge badge-accent ml-4 mt-2">↑ {value.nuclear}MW</div>
+							<div class="badge badge-accent ml-4 mt-2">↑ {value.nuclear}%</div>
 						{:catch error}
 							<h6>Error loading data</h6>
 						{/await}
