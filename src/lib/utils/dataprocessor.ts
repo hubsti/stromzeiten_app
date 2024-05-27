@@ -34,15 +34,99 @@ export interface GenerationApiResponse {
     oil: number;
 }
 
+export function formatDataForPieChartEmissions(dataPromise: Promise<any>): Promise<any> {
+    return dataPromise.then((jsonData) => {
+        // Sum up hydro and wind values
+        jsonData.hydro1 = (jsonData.Hydro_storage_CEI || 0) + (jsonData.Hydro_CEI || 0) + (jsonData.Hydro_res_CEI || 0);
+        jsonData.wind = (jsonData.Wind_off_CEI || 0) + (jsonData.Wind_on_CEI || 0);
+
+
+        // Remove original keys
+        delete jsonData.hydro_storage;
+        delete jsonData.hydro_res;
+        delete jsonData.wind_off;
+        delete jsonData.wind_on;
+        delete jsonData.hydro;
+        delete jsonData.index;
+        delete jsonData.country_code;
+        jsonData.hydro = jsonData.hydro1
+        delete jsonData.hydro1;
+
+        let newObject = {
+            biomass: jsonData.Biomass_CEI,
+            lignite: jsonData.Lignite_CEI,
+            gas: jsonData.Gas_CEI,
+            coal: jsonData.Coal_CEI,
+            oil: jsonData.Oil_CEI,
+            geothermal: jsonData.Geothermal_CEI,
+            hydro: jsonData.hydro,
+            nuclear: jsonData.Nuclear_CEI,
+            other: jsonData.Other_CEI,
+            other_renew: jsonData.Other_renew_CEI,
+            solar: jsonData.Solar_CEI,
+            waste: jsonData.Waste_CEI,
+            wind: jsonData.wind,
+        };
+        // @ts-ignore
+        let labels = Object.keys(newObject).filter(key => newObject[key] !== undefined);
+        // @ts-ignore
+        let valuesList = labels.map(key => parseFloat(newObject[key].toFixed(2)));
+        return { labels, valuesList };
+    });
+}
+
+
 
 export function formatDataForPieChart(dataPromise: Promise<any>): Promise<any> {
     return dataPromise.then((jsonData) => {
-        let keys = Object.keys(jsonData);
-        let values = Object.values(jsonData);
+        // Sum up hydro and wind values
+        jsonData.hydro1 = (jsonData.hydro || 0) + (jsonData.hydro_storage || 0) + (jsonData.hydro_res || 0);
+        jsonData.wind = (jsonData.wind_off || 0) + (jsonData.wind_on || 0);
 
-        let labels = keys.slice(1, -1); // remove first and last elements
-        let valuesList = values.slice(1, -1); // remove first and last elements
+        // Remove original keys
+        delete jsonData.hydro_storage;
+        delete jsonData.hydro_res;
+        delete jsonData.wind_off;
+        delete jsonData.wind_on;
+        delete jsonData.hydro;
+        delete jsonData.index;
+        delete jsonData.country_code;
+        jsonData.hydro = jsonData.hydro1
+        delete jsonData.hydro1;
+        let labels = Object.keys(jsonData);
+        let valuesList = labels.map(key => parseFloat(jsonData[key].toFixed(2)));
+
         return { labels, valuesList };
+    });
+}
+
+
+
+export function formatDataForAreaChartGeneration(dataPromise: Promise<any>,): Promise<any> {
+    return dataPromise.then((jsonData) => {
+
+        let labels = jsonData.map((item: { index: any; }) => item.index);
+        let valuesObject = jsonData.reduce((acc: { [x: string]: any[]; }, item: { [x: string]: any; }) => {
+            let newItem = { ...item };
+            newItem['wind'] = (item['wind_on'] || 0) + (item['wind_off'] || 0);
+            newItem['hydro'] = (item['hydro'] || 0) + (item['hydro_res'] || 0) + (item['hydro_storage'] || 0);
+            delete newItem['wind_on'];
+            delete newItem['wind_off'];
+            delete newItem['hydro_res'];
+            delete newItem['hydro_storage'];
+
+            Object.keys(newItem).forEach(key => {
+                if (key !== 'index' && newItem[key] !== 0) {
+                    if (!acc[key]) {
+                        acc[key] = [];
+                    }
+                    acc[key].push(newItem[key]);
+                }
+            });
+            return acc;
+        }, {});
+        console.log(labels, valuesObject);
+        return { labels, valuesObject };
     });
 }
 
@@ -117,7 +201,6 @@ export function calculateEnergyPercentages(apiPromise: Promise<ApiResponse>): Pr
         const nonRenewablePercentage = Math.round((nonRenewableEnergy / totalEnergy) * 100);
         const nuclearPercentage = Math.round((nuclearEnergy / totalEnergy) * 100);
 
-        //console.log(renewablePercentage, nonRenewablePercentage, nuclearPercentage);
 
         return {
             renewable: renewablePercentage.toFixed(0),
@@ -147,7 +230,7 @@ export function calculateEnergyDifferences(apiPromise: Promise<ApiResponse>): Pr
         const nonRenewableEnergy = nonRenewableSources.reduce((total, source) => total + (formatteddata[source] || 0), 0);
         const nuclearEnergy = nuclearSources.reduce((total, source) => total + (formatteddata[source] || 0), 0);
 
-        //console.log(renewableEnergy, nonRenewableEnergy, nuclearEnergy);
+
         return {
             renewable: renewableEnergy,
             nonRenewable: nonRenewableEnergy,

@@ -51,6 +51,14 @@ export const load: PageServerLoad = async (event) => {
         const response = await event.fetch(`/api/forecast?country=${new_country}`)
         return response
     }
+    const emissions = async () => {
+        const response = await event.fetch(`/api/emissions?country=${new_country}`)
+        return response
+    }
+    const generation_24h = async () => {
+        const response = await event.fetch(`/api/generation_24h?country=${new_country}`)
+        return response
+    }
     return {
         country: new_country,
         streamed: {
@@ -60,6 +68,8 @@ export const load: PageServerLoad = async (event) => {
             generation_diff: generation_diff().then(d => d.json()).catch((error) => console.log(error)),
             averge_cei: averge_cei().then(d => d.json()).catch((error) => console.log(error)),
             forecast: forecast().then(d => d.json()).catch((error) => console.log(error)),
+            emissions: emissions().then(d => d.json()).catch((error) => console.log(error)),
+            generation_24h: generation_24h().then(d => d.json()).catch((error) => console.log(error)),
         },
     }
 }

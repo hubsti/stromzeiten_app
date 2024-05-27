@@ -58,7 +58,7 @@
 								}
 
 								if (context.parsed !== null) {
-									label += context.parsed + 'MW';
+									label += context.parsed + ' gCO₂eq/kWh';
 								}
 
 								return label;
@@ -73,7 +73,7 @@
 
 <div class="card w-96 bg-base-100 shadow">
 	<div class="card-body">
-		<h2 class="card-title">Electricity production by source</h2>
+		<h2 class="card-title">Emissions output by source</h2>
 		<div class="canvas-container">
 			<canvas bind:this={ctx} width="500" height="500" in:fade></canvas>
 		</div>

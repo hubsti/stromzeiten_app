@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { bluePeriodsStore, threedayavg} from '$lib/store';
+	import { bluePeriodsStore, threedayavg } from '$lib/store';
 	import { draw, fade } from 'svelte/transition';
 	import Chart, { type ChartArea } from 'chart.js/auto';
 	import 'chartjs-adapter-luxon';
@@ -25,25 +25,24 @@
 		height: number,
 		gradient: { addColorStop: (arg0: number, arg1: string) => void };
 
-		
-		const annotation2 = {
-			type: 'line',
-			borderColor: 'black',
-			borderDash: [6, 6],
-			borderDashOffset: 0,
-			borderWidth: 1,
-			label: {
-				display: true,
-				content: 'Live: ' + ceidata[ceidata.length - 1].toFixed(2),
+	const annotation2 = {
+		type: 'line',
+		borderColor: 'black',
+		borderDash: [6, 6],
+		borderDashOffset: 0,
+		borderWidth: 1,
+		label: {
+			display: true,
+			content: 'Live: ' + ceidata[ceidata.length - 1].toFixed(2),
 			position: 'end'
 		},
 		scaleID: 'x',
 		value: labels[ceidata.length - 1]
 	};
-	
+
 	let ctx: HTMLCanvasElement | undefined;
 	let chart: Chart | undefined;
-	
+
 	function getGradient(ctx: CanvasRenderingContext2D, chartArea: ChartArea) {
 		const chartWidth = chartArea.right - chartArea.left;
 		const chartHeight = chartArea.bottom - chartArea.top;
@@ -57,10 +56,10 @@
 			gradient.addColorStop(0.5, CHART_COLORS.yellow);
 			gradient.addColorStop(1, CHART_COLORS.red);
 		}
-		
+
 		return gradient;
 	}
-	
+
 	function getColorStopForIndex(index: number, totalPoints: number): string {
 		const stop = index / (totalPoints - 1);
 		if (stop <= 0.5) {
@@ -76,14 +75,11 @@
 		const sum = validData.reduce((acc, value) => acc + value, 0);
 		return validData.length ? sum / validData.length : 0;
 	}
-	
+
 	const averageCEI = calculateAverage(ceidata);
 	const averageCEIPrediction = calculateAverage(ceiPrediction);
 	const BLUE_THRESHOLD = (averageCEI + averageCEIPrediction) / 2; //
 	threedayavg.set(BLUE_THRESHOLD);
-	//console.log('Average CEI:', averageCEI);
-	//console.log('Average CEI Prediction:', averageCEIPrediction);
-	//console.log('Blue threshold:', BLUE_THRESHOLD);
 	const annotation = {
 		type: 'line',
 		borderColor: 'black',
@@ -103,7 +99,7 @@
 		let periods = [];
 		let start: any = null;
 		let today = DateTime.local().startOf('day');
-		
+
 		data.forEach((value, index) => {
 			if (value <= BLUE_THRESHOLD) {
 				if (start === null) {
@@ -112,12 +108,23 @@
 			} else {
 				if (start !== null) {
 					let startTime = DateTime.fromISO(new Date(start).toISOString());
-					let endTime =DateTime.fromISO(new Date(labels[index - 1]).toISOString());
+					let endTime = DateTime.fromISO(new Date(labels[index - 1]).toISOString());
 					let duration = endTime.diff(startTime, 'hours').hours;
-					console.log(`Start: ${start}, End: ${labels[index - 1]}, Duration: ${duration} hours`);
-					if (start !== labels[index - 1] && duration <= 24 && startTime >= today)  {
+					if (
+						start !== labels[index - 1] &&
+						duration <= 24 &&
+						duration !== 1 &&
+						startTime >= today
+					) {
 						periods.push({ start, end: labels[index - 1] });
 						start = null;
+						let periodsToday = periods.filter((period) =>
+							DateTime.fromISO(period.start).hasSame(today, 'day')
+						);
+						if (periodsToday.length >= 3) {
+							// Discard the last period
+							periods.pop();
+						}
 					}
 				}
 			}
@@ -142,11 +149,10 @@
 
 		const bluePeriods = findBluePeriods(ceidata, labels).concat(
 			findBluePeriods(ceiPrediction, labels)
-			
 		);
 		// @ts-ignore
 		bluePeriodsStore.set(bluePeriods);
-		//console.log('Blue periods:', bluePeriods);
+
 		chart = new Chart(ctx, {
 			type: 'line',
 			data: {
@@ -169,7 +175,7 @@
 								context.dataIndex,
 								context.dataset.data.length
 							);
-							//console.log(`Color for data point ${context.dataIndex}: ${colorStop}`);
+
 							return gradient;
 						}
 					},
@@ -218,6 +224,23 @@
 					legend: {
 						display: false
 					},
+					tooltip: {
+						callbacks: {
+							label: function (context) {
+								var label = context.dataset.label || '';
+
+								if (label) {
+									label += ': ';
+								}
+
+								if (context.parsed !== null) {
+									label += context.parsed.y.toFixed(2) + ' gCO₂eq/kWh';
+								}
+
+								return label;
+							}
+						}
+					},
 					annotation: {
 						// @ts-ignore
 						annotations: {
@@ -231,7 +254,7 @@
 	}
 </script>
 
-<div class="card w-full h-full bg-base-100 shadow">
+<div class="card w-full bg-base-100 shadow">
 	<div class="card-body">
 		<h2 class="card-title">Carbon Intensity</h2>
 		<div class="canvas-container">

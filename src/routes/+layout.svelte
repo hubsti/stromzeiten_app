@@ -9,10 +9,6 @@
 		const country = action.searchParams.get('country');
 	};
 	export let selectedOption: string;
-	function handleChange(event: any) {
-		selectedOption = event.target.value;
-		goto(`/?/setCountry&country=${encodeURIComponent(selectedOption)}`);
-	}
 </script>
 
 <div class="navbar w-full bg-base-100 shadow mb-5">
@@ -90,23 +86,20 @@
 					tabindex="0"
 					class="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-t-none w-52 mt-4"
 				>
-				<form method="POST" use:enhance={submitUpdateCountry}>
-					{#each european_countries as country (country[1])}
-						<li>
-							<button
-								formaction={`/?/setCountry&country=${country[0]}`}
-								name="country"
-								value={country[0]}
-								><span class="flex-auto text-left">{country[0]} {countryFlags[country[0]]}</span
-								></button
-							>
-						</li>
-					{/each}
+					<form method="POST" use:enhance={submitUpdateCountry}>
+						{#each european_countries as country (country[1])}
+							<li>
+								<button
+									formaction={`/?/setCountry&country=${country[0]}`}
+									name="country"
+									value={country[0]}
+									><span class="flex-auto text-left">{country[0]} {countryFlags[country[0]]}</span
+									></button
+								>
+							</li>
+						{/each}
 					</form>
-					<!-- svelte-ignore a11y-missing-attribute -->
-					<li><a>Item 1</a></li>
-					<!-- svelte-ignore a11y-missing-attribute -->
-					<li><a>Item 2</a></li>
+
 				</ul>
 			</div>
 		</div>
@@ -142,6 +135,6 @@
 	class="footer footer-center p-5 bg-base-200 text-base-content rounded bottom-0 left-0 w-full"
 >
 	<aside>
-		<p>Copyright © 2024 - All right reserved by ACME Industries Ltd</p>
+		<p>Made in Brussels 🇧🇪🇪🇺  with  ❤️ </p>
 	</aside>
 </footer>
