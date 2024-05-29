@@ -125,7 +125,6 @@ export function formatDataForAreaChartGeneration(dataPromise: Promise<any>,): Pr
             });
             return acc;
         }, {});
-        console.log(labels, valuesObject);
         return { labels, valuesObject };
     });
 }

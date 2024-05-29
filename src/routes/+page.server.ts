@@ -11,7 +11,7 @@ export const load: PageServerLoad = async (event) => {
         });
     }
     const cookieCountry = event.cookies.get("selected_country")
-    console.log("cookie country:", cookieCountry)
+
     let new_country: string | null = null
 
     if (newCountry) {
@@ -64,7 +64,7 @@ export const actions: Actions = {
     setCountry: async ({ url, cookies }) => {
         const country = url.searchParams.get('country')
         const redirectTo = url.searchParams.get('redirectTo')
-        console.log("selected country:", country)
+
         if (country) {
             cookies.set('selected_country', country, {
                 path: '/',
@@ -77,8 +77,20 @@ export const actions: Actions = {
 
 
 
-    }
+    },
 
+	setTheme: async ({ url, cookies }) => {
+        const theme = url.searchParams.get("theme");
+        const redirectTo = url.searchParams.get("redirectTo");
 
+        if (theme) {
+            cookies.set("colortheme", theme, {
+                path: "/",
+                maxAge: 60 * 60 * 24 * 365,
+            });
+        }
+
+        throw redirect(303, redirectTo ?? "/");
+    },
 
 }

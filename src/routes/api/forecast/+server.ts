@@ -15,7 +15,7 @@ export async function GET(event) {
         const formattedDateAgo = format(twentyFourHoursAgo, 'yyyy-MM-dd HH:mm:ss');
         const formattedDateAhead = format(twentyFourHoursAhead, 'yyyy-MM-dd HH:mm:ss');
         const result = await client.query(
-            `select time, "Cei_prediction" from "forecast_data" where country_code='${country_code}' AND time >= '${formattedDateAgo}' ORDER By time asc`
+            `select time, "Cei_prediction" from "forecast_data" where country_code='${country_code}' AND time >= '${formattedDateAgo}' ORDER By time ASC`
         );
 
         event.setHeaders({

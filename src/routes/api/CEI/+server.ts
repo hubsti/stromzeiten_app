@@ -21,7 +21,7 @@ export async function GET(event) {
 		const formattedDate = format(twentyFourHoursAgo, 'yyyy-MM-dd HH:mm:ss');
 
 		const result = await client.query(
-			`SELECT index, "Carbon_Intensity_CEI" FROM "emissions" WHERE country_code='${country_code}' AND index >= '${formattedDate}' ORDER BY index DESC`
+			`SELECT index, "Carbon_Intensity_CEI" FROM "emissions" WHERE country_code='${country_code}' AND index >= '${formattedDate}' ORDER BY index ASC`
 		);
 
 		event.setHeaders({

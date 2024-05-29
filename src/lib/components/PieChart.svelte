@@ -1,26 +1,27 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import Chart from 'chart.js/auto';
+            import { onMount } from 'svelte';
+
 	let ctx: HTMLCanvasElement | undefined;
 	let chart: Chart | undefined;
 
 	export let labels;
 	export let generationdata;
-
 	let colorMapping = {
-		lignite: 'rgb(128, 0, 0)', // Dark Red for lignite
-		gas: 'rgb(255, 99, 71)', // Tomato for gas
-		coal: 'rgb(105, 105, 105)', // Dim Gray for coal
-		oil: 'rgb(139, 69, 19)', // Saddle Brown for oil
+		lignite: 'rgb(156, 98, 75)', // Dark Red for lignite
+		gas: 'rgb(195, 83, 110)', // Tomato for gas
+		coal: 'rgb(183, 158, 88)', // Dim Gray for coal
+		oil: 'rgb(153, 146, 127)', // Saddle Brown for oil
 		other: 'rgb(112, 128, 144)', // Slate Gray for other non-renewables
 		waste: 'rgb(160, 82, 45)', // Sienna for waste
-		biomass: 'rgb(85, 107, 47)', // Dark Olive Green for biomass (renewable)
+		biomass: 'rgb(63, 130, 115)', // Dark Olive Green for biomass (renewable)
 		geothermal: 'rgb(34, 139, 34)', // Forest Green for geothermal (renewable)
-		hydro: 'rgb(70, 130, 180)', // Steel Blue for hydro (renewable)
+		hydro: 'rgb(77, 137, 188)', // Steel Blue for hydro (renewable)
 		other_renew: 'rgb(46, 139, 87)', // Sea Green for other renewable
-		solar: 'rgb(255, 215, 0)', // Gold for solar (renewable)
-		wind: 'rgb(135, 206, 250)', // Light Sky Blue for wind (renewable)
-		nuclear: 'rgb(255, 165, 0)' // Orange for nuclear
+		solar: 'rgb(239, 138, 50)', // Gold for solar (renewable)
+		wind: 'rgb(138, 210, 194)', // Light Sky Blue for wind (renewable)
+		nuclear: 'rgb(185, 193, 46)' // Orange for nuclear
 	};
 	$: if (ctx) {
 		if (chart) {
@@ -35,6 +36,7 @@
 					{
 						label: 'Electricity production',
 						data: generationdata,
+						borderColor: 'transparent',
 						backgroundColor: labels.map(
 							(label: string | number) => colorMapping[label as keyof typeof colorMapping]
 						),
@@ -79,3 +81,8 @@
 		</div>
 	</div>
 </div>
+
+<style>
+
+
+</style>

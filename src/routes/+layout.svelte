@@ -9,6 +9,21 @@
 		const country = action.searchParams.get('country');
 	};
 	export let selectedOption: string;
+	import { onMount } from 'svelte';
+	import { themeChange } from 'theme-change';
+	function setThemeCheckbox() {
+    const checkbox = document.querySelector('.theme-controller') as HTMLInputElement;
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    checkbox.checked = currentTheme === 'dark';
+	}
+
+	// NOTE: the element that is using one of the theme attributes must be in the DOM on mount
+	onMount(() => {
+		themeChange(false);
+		setThemeCheckbox();
+		// 👆 false parameter is required for svelte
+	});
 </script>
 
 <div class="navbar w-full bg-base-100 shadow mb-5">
@@ -20,7 +35,7 @@
 		<div class="flex items-stretch">
 			<label class="swap swap-rotate mr-2">
 				<!-- this hidden checkbox controls the state -->
-				<input type="checkbox" class="theme-controller" value="dark" />
+				<input type="checkbox" class="theme-controller" data-toggle-theme="dark" />
 
 				<!-- sun icon -->
 				<svg
@@ -99,7 +114,6 @@
 							</li>
 						{/each}
 					</form>
-
 				</ul>
 			</div>
 		</div>
@@ -135,6 +149,6 @@
 	class="footer footer-center p-5 bg-base-200 text-base-content rounded bottom-0 left-0 w-full"
 >
 	<aside>
-		<p>Made in Brussels 🇧🇪🇪🇺  with  ❤️ </p>
+		<p>Made in Brussels 🇧🇪🇪🇺 with ❤️</p>
 	</aside>
 </footer>

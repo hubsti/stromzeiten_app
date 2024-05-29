@@ -5,12 +5,17 @@
 	import 'chartjs-adapter-luxon';
 	import { DateTime } from 'luxon';
 	import annotationPlugin from 'chartjs-plugin-annotation';
+	import { onMount } from 'svelte';
+
+
+
+
 
 	Chart.register(annotationPlugin);
 	export let labels;
 	export let ceidata;
 	export let ceiPrediction;
-	export let averagecei;
+	let averagecei;
 
 	export const CHART_COLORS = {
 		red: 'rgb(255, 99, 132)',
@@ -78,7 +83,7 @@
 
 	const averageCEI = calculateAverage(ceidata);
 	const averageCEIPrediction = calculateAverage(ceiPrediction);
-	const BLUE_THRESHOLD = (averageCEI + averageCEIPrediction) / 2; //
+	const BLUE_THRESHOLD = ((averageCEI + averageCEIPrediction) / 2)*0.9; //
 	threedayavg.set(BLUE_THRESHOLD);
 	const annotation = {
 		type: 'line',
@@ -162,6 +167,7 @@
 						label: 'Live',
 						data: ceidata,
 						borderWidth: 2,
+						fill: true,
 						borderColor: function (context) {
 							const chart = context.chart;
 							const { ctx, chartArea } = chart;
@@ -184,6 +190,7 @@
 						data: ceiPrediction,
 						borderDash: [6, 6],
 						borderWidth: 2,
+						fill: true,
 						borderColor: function (context) {
 							const chart = context.chart;
 							const { ctx, chartArea } = chart;
@@ -262,3 +269,10 @@
 		</div>
 	</div>
 </div>
+
+<style>
+
+html[data-theme='dark'] .canvas-container canvas {
+    filter: invert(1) hue-rotate(180deg);
+}
+</style>
