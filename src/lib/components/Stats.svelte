@@ -35,7 +35,7 @@
 			Carbon intensity in 🌍
 		{/if}
 
-		<div class="stats">
+		<div class="stats stats-vertical xl:stats-horizontal">
 			<div class="stat">
 				<!-- <div class="stat-title">On 5th May 2023 at 14:00</div> -->
 
@@ -153,10 +153,8 @@
 						{:then value}
 							<div class="badge badge badge-outline ml-3 mt-2">
 								{#if Math.round(value.nonRenewable) !== 0}
-								
 									{value.nonRenewable >= 0 ? '↑' : '↓'} {Math.abs(value.nonRenewable).toFixed(0)}%
-								{:else}%
-									0%
+								{:else}0%
 								{/if}
 							</div>
 						{:catch error}

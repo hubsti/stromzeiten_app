@@ -27,7 +27,7 @@
 	}, {});
 </script>
 
-<div class="card w-96 bg-base-100 shadow h-max">
+<div class="card w-96 bg-base-100 shadow h-max ">
 	<div class="card-body">
 		<h2 class="card-title">
 			Forecast 🔌
@@ -35,7 +35,7 @@
 		<div class="flex flex-row">
 			<div class="stat-title">Next slots to plug in</div>
 		</div>
-		<div class="stats stats-vertical h-96 mb-11">
+		<div class="stats stats-vertical h-96 mb-11 ">
 			{#each Object.keys(periodsByDay) as day}
 				<div class="stat">
 					<div class="stat-title m-2">{day}</div>

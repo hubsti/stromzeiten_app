@@ -29,8 +29,8 @@
 </script>
 
 <div class="container h-full mx-auto max-w-fit bg-base-150">
-	<div class="grid grid-cols-7 gap-4">
-		<div class="col-span-7">
+	<div class="grid grid-cols-1 xl:grid-cols-7 gap-4">
+		<div class="xl:col-span-7">
 			<Stats
 				country={data.country}
 				emissions={data.streamed.dashboard}
@@ -38,11 +38,11 @@
 				energyDifferences={data.streamed.generation_diff}
 			/>
 		</div>
-		<div class="col-span-2">
+		<div class="xl:col-span-2">
 			<Table />
 		</div>
 
-		<div class="col-span-5">
+		<div class="xl:col-span-5">
 			{#await areachartdata}
 				loading
 			{:then value}
@@ -50,13 +50,13 @@
 					labels={value.labels_sorted}
 					ceidata={value.ceiValues}
 					ceiPrediction={value.ceiPredictionValues}
-					averagecei={value.avg}
+					
 				/>
 			{:catch error}
 				Error loading data
 			{/await}
 		</div>
-		<div class="col-span-2">
+		<div class="xl:col-span-2">
 			{#await piechartdata}
 				loading
 			{:then value}
@@ -66,7 +66,7 @@
 			{/await}
 		</div>
 
-		<div class="col-span-2">
+		<div class="xl:col-span-2">
 			{#await emissionspiechartdata}
 				loading
 			{:then value}
@@ -75,7 +75,7 @@
 				Error loading data
 			{/await}
 		</div>
-		<div class="col-span-3">
+		<div class="xl:col-span-3">
 			{#await generation24h}
 				loading
 			{:then value}
