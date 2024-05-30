@@ -12,10 +12,10 @@
 	import { onMount } from 'svelte';
 	import { themeChange } from 'theme-change';
 	function setThemeCheckbox() {
-    const checkbox = document.querySelector('.theme-controller') as HTMLInputElement;
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    checkbox.checked = currentTheme === 'dark';
+		const checkbox = document.querySelector('.theme-controller') as HTMLInputElement;
+		const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+		document.documentElement.setAttribute('data-theme', currentTheme);
+		checkbox.checked = currentTheme === 'dark';
 	}
 
 	// NOTE: the element that is using one of the theme attributes must be in the DOM on mount
@@ -28,8 +28,7 @@
 
 <div class="navbar w-full bg-base-100 shadow mb-5">
 	<div class="flex-1 px-2 lg:flex-none">
-		<!-- svelte-ignore a11y-missing-attribute -->
-		<a class="btn btn-ghost text-xl">Stromzeiten</a>
+		<a href="/" class="btn btn-ghost text-xl">Stromzeiten</a>
 	</div>
 	<div class="flex justify-end flex-1 px-2">
 		<div class="flex items-stretch">
@@ -57,8 +56,8 @@
 					/></svg
 				>
 			</label>
-			<!-- svelte-ignore a11y-missing-attribute -->
-			<a class="btn btn-ghost rounded-btn">
+
+			<a class="btn btn-ghost rounded-btn" href="/about">
 				<svg
 					width="20"
 					height="20"
@@ -86,13 +85,14 @@
 						fill="none"
 						viewBox="0 0 24 24"
 						class="h-5 w-5 stroke-current md:hidden"
-						><path
+			>
+						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
 							stroke-width="2"
-							d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
-						></path></svg
-					>
+							d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
+						/>
+					</svg>
 					<span class="hidden font-normal md:inline">Country</span>
 				</div>
 

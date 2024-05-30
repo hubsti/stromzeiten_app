@@ -32,94 +32,95 @@
 		{#if countryFlags[country]}
 			<h2 class="card-title">Carbon intensity in {country} {countryFlags[country]}</h2>
 		{:else}
-			Carbon intensity in 🌍
+		Carbon intensity in 🌍
 		{/if}
-
 		<div class="stats stats-vertical xl:stats-horizontal">
 			<div class="stat">
 				<!-- <div class="stat-title">On 5th May 2023 at 14:00</div> -->
-
+				
 				{#await emissions}
-					<div>loading data</div>
+				<div>loading data</div>
 				{:then value}
-					<div class="stat-title">On {formattedDate} at {value.time}</div>
+				<div class="stat-title">On {formattedDate} at {value.time}</div>
 				{:catch error}
-					<h6>Error loading data</h6>
+				<h6>Error loading data</h6>
 				{/await}
-
+				
 				<div class="flex flex-row">
 					{#await emissions}
-						<div>loading data</div>
+					<div>loading data</div>
 					{:then value}
+					
 						<div class="stat-value">{value.Carbon_Intensity_CEI}</div>
-					{:catch error}
-						<h6>Error loading data</h6>
-					{/await}
+					
+						{:catch error}
+							<h6>Error loading data</h6>
+						{/await}
 
-					{#await emissions}
-						<div>loading data</div>
-					{:then value}
-						{#if value.Carbon_Intensity_CEI >= 1.2 * threedayavgstat}
-							<div class="stat-value mx-6">Poor</div>
-							<div class="stat-figure text-secondary mt-1">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke-width="1.5"
-									stroke="currentColor"
-									class="w-8 h-8"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
-									/>
-								</svg>
-							</div>
-						{:else if value.Carbon_Intensity_CEI < 1.2 * threedayavgstat && value.Carbon_Intensity_CEI >= 0.8 * threedayavgstat}
-							<div class="stat-value mx-6">Moderate</div>
-							<div class="stat-figure text-secondary mt-1">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke-width="1.5"
-									stroke="currentColor"
-									class="w-8 h-8"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M15.182 15h-6.364M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
-									/>
-								</svg>
-							</div>
-						{:else}
-							<div class="stat-value mx-6">Good</div>
-							<div class="stat-figure text-secondary mt-1">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke-width="1.5"
-									stroke="currentColor"
-									class="w-8 h-8"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
-									/>
-								</svg>
-							</div>
-						{/if}
-					{:catch error}
-						<h6>Error loading data</h6>
-					{/await}
-				</div>
+						{#await emissions}
+							<div>loading data</div>
+						{:then value}
+							{#if value.Carbon_Intensity_CEI >= 1.2 * threedayavgstat}
+								<div class="stat-value mx-6">Poor</div>
+								<div class="stat-figure text-error mt-1">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+										class="w-8 h-8"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
+										/>
+									</svg>
+								</div>
+							{:else if value.Carbon_Intensity_CEI < 1.2 * threedayavgstat && value.Carbon_Intensity_CEI >= 0.8 * threedayavgstat}
+								<div class="stat-value mx-6">Moderate</div>
+								<div class="stat-figure text-warning mt-1">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+										class="w-8 h-8"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M15.182 15h-6.364M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
+										/>
+									</svg>
+								</div>
+							{:else}
+								<div class="stat-value mx-6">Good</div>
+								<div class="stat-figure text-success mt-1">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+										class="w-8 h-8"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z"
+										/>
+									</svg>
+								</div>
+							{/if}
+						{:catch error}
+							<h6>Error loading data</h6>
+						{/await}
+					</div>
 
-				<div class="stat-desc">gCO₂eq/kWh</div>
+					<div class="stat-desc">gCO₂eq/kWh</div>
 			</div>
 
 			<div class="stat">
