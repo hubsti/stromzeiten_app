@@ -23,17 +23,23 @@ export async function GET(event: RequestEvent): Promise<Response> {
             SELECT * FROM generation
             WHERE country_code = $1
             ORDER BY index DESC
-            LIMIT 1
+            LIMIT 3
         `;
 		const values = [countryCode];
 
 		const result = await client.query<GenerationData>(query, values);
-
+	
 		if (result.rows.length === 0) {
 			return json({ error: 'No data found for the specified country' }, { status: 404 });
 		}
+		let generationData;
+		
+		if (country === 'Germany') {
+			generationData = result.rows[1];
+		} else {
+			generationData = result.rows[0];
+		}
 
-		const generationData = result.rows[0];
 
 		const keysToDelete = ['renewables', 'nonrenewables', 'total'];
 
