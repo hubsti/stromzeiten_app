@@ -146,7 +146,7 @@
 						{#await energyDifferences}
 							<div>loading data</div>
 						{:then value}
-							<div class="badge badge badge-outline ml-4 mt-2">
+							<div class="badge badge badge-outline ml-1 xl:ml-4 mt-2">
 								{#if Math.round(value.nonRenewable) !== 0}
 									{value.nonRenewable >= 0 ? '↑' : '↓'} {Math.abs(value.nonRenewable).toFixed(0)}%
 								{:else}0%
@@ -197,7 +197,7 @@
 						{#await energyDifferences}
 							<div>loading data</div>
 						{:then value}
-							<div class="badge badge badge-outline xl:ml-4 mt-2">
+							<div class="badge badge badge-outline ml-1 xl:ml-4 mt-2">
 								{#if Math.round(value.renewable) !== 0}
 									{value.renewable >= 0 ? '↑' : '↓'} {Math.abs(value.renewable).toFixed(0)}%
 								{:else}
@@ -248,7 +248,7 @@
 						{#await energyDifferences}
 							<div>loading data</div>
 						{:then value}
-							<div class="badge badge badge-outline xl:ml-4 mt-2">
+							<div class="badge badge badge-outline ml-1 xl:ml-4 mt-2">
 								{#if Math.round(value.nuclear) !== 0}
 									{value.nuclear >= 0 ? '↑' : '↓'} {Math.abs(value.nuclear).toFixed(0)}%
 								{:else}

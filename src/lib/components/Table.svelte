@@ -33,7 +33,7 @@
 	}, {});
 </script>
 
-<div class="card w-96 bg-base-100 shadow h-max ">
+<div class="card w-96 bg-base-100 shadow h-max w-min-full">
 	<div class="card-body">
 		<h2 class="card-title">
 			Forecast 🔌
