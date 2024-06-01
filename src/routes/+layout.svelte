@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Analytics from '$lib/analytics.svelte';
 	import 'tailwindcss/tailwind.css';
 	import { countryFlags, europeanCountries } from '$lib/utils/countries';
 	import type { SubmitFunction } from '@sveltejs/kit';
@@ -23,7 +24,7 @@
 		setThemeCheckbox();
 	});
 </script>
-
+<Analytics/>
 <div class="flex flex-col min-h-screen bg-base-200 justify-between">
 	<div class="navbar w-full bg-base-100 shadow mb-5">
 		<div class="flex-1 px-2 lg:flex-none">
