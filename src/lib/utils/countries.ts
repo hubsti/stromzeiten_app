@@ -1,4 +1,4 @@
-export const european_countries = [
+export const europeanCountries = [
     ["Austria", "AT", "Vienna", "Europe/Brussels"],
     ["Belgium", "BE", "Brussels", "Europe/Brussels"],
     // no data ["Bosnia and Herzegovina", "BA", "Sarajevo", "Europe/Belgrade"],

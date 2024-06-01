@@ -8,7 +8,6 @@
 	
 	let threedayavgstat: number;
 
-	// Subscribe to the store to get the blue periods
 	threedayavg.subscribe((value) => {
 		threedayavgstat = Number(value);
 	});
@@ -16,15 +15,9 @@
 	const currentDate = new Date();
 	const formattedDate = currentDate.toLocaleString('en-GB', {
 		day: 'numeric',
-		//weekday: 'long',
-		//year: 'numeric',
 		month: 'long'
 	});
-	const formattedTime = currentDate.toLocaleString('en-GB', {
-		hour: 'numeric',
-		minute: 'numeric',
-		hour12: false
-	});
+
 </script>
 
 <div class="card bg-base-100 shadow">

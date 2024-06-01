@@ -3,9 +3,6 @@
 	import Chart from 'chart.js/auto';
 	import 'chartjs-adapter-luxon';
 	import annotationPlugin from 'chartjs-plugin-annotation';
-	import { onMount } from 'svelte';
-
-
 
 	Chart.register(annotationPlugin);
 	export let labels;

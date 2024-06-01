@@ -1,17 +1,16 @@
 <script lang="ts">
 	import { bluePeriodsStore, threedayavg } from '$lib/store';
-	import { draw, fade } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 	import Chart, { type ChartArea } from 'chart.js/auto';
 	import 'chartjs-adapter-luxon';
 	import { DateTime } from 'luxon';
 	import annotationPlugin from 'chartjs-plugin-annotation';
-	import { onMount } from 'svelte';
 
 	Chart.register(annotationPlugin);
 	export let labels;
 	export let ceidata;
 	export let ceiPrediction;
-	let averagecei;
+
 
 	export const CHART_COLORS = {
 		red: 'rgb(255, 99, 132)',

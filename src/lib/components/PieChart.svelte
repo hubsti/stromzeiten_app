@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import Chart from 'chart.js/auto';
-            import { onMount } from 'svelte';
-
+	import Chart from 'chart.js/auto'
 	let ctx: HTMLCanvasElement | undefined;
 	let chart: Chart | undefined;
 

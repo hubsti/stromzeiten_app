@@ -1,6 +1,6 @@
 <script lang="ts">
 	import 'tailwindcss/tailwind.css';
-	import { countryFlags, european_countries } from '$lib/utils/countries';
+	import { countryFlags, europeanCountries } from '$lib/utils/countries';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
@@ -103,7 +103,7 @@
 					class="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-t-none w-52 mt-4"
 				>
 					<form method="POST" use:enhance={submitUpdateCountry}>
-						{#each european_countries as country (country[1])}
+						{#each europeanCountries as country (country[1])}
 							<li>
 								<button
 									formaction={`/?/setCountry&country=${country[0]}`}
