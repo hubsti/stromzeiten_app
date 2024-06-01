@@ -52,6 +52,9 @@ devDependencies:
   '@types/eslint':
     specifier: ^8.56.0
     version: 8.56.10
+  '@types/gtag.js':
+    specifier: ^0.0.20
+    version: 0.0.20
   '@types/luxon':
     specifier: ^3.4.2
     version: 3.4.2
@@ -711,6 +714,10 @@ packages:
 
   /@types/estree@1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
+    dev: true
+
+  /@types/gtag.js@0.0.20:
+    resolution: {integrity: sha512-wwAbk3SA2QeU67unN7zPxjEHmPmlXwZXZvQEpbEUQuMCRGgKyE1m6XDuTUA9b6pCGb/GqJmdfMOY5LuDjJSbbg==}
     dev: true
 
   /@types/json-schema@7.0.15:
