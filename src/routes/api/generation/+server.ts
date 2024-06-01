@@ -42,6 +42,7 @@ export async function GET(event) {
 				'Content-Type': 'application/json'
 			}
 		});
+		//console.log("API",response);
 		return response;
 	} catch (error) {
 		return json(error);

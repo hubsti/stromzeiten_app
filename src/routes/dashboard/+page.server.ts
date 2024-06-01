@@ -1,6 +1,4 @@
-import { validateUser, type User } from "$lib/types";
-import type { PageServerLoad } from "./$types";
-
+import type { PageServerLoad } from "../$types";
 
 export const load: PageServerLoad = async (event) => {
     const newCountry = event.url.searchParams.get("country")
@@ -26,7 +24,7 @@ export const load: PageServerLoad = async (event) => {
 
     const generation = async () => {
         const response = await event.fetch(`/api/generation?country=${new_country}`)
-        
+        //console.log(response)
         return response
     }
 
@@ -59,6 +57,14 @@ export const load: PageServerLoad = async (event) => {
         const response = await event.fetch(`/api/generation_24h?country=${new_country}`)
         return response
     }
+    const generationchart = async () => {
+        const response = await event.fetch(`/api/generationchart?country=${new_country}`)
+        return response
+    }
+    const emissionspiechart = async () => {
+        const response = await event.fetch(`/api/emissionspiechart?country=${new_country}`)
+        return response
+    }
     return {
         country: new_country,
         streamed: {
@@ -70,6 +76,8 @@ export const load: PageServerLoad = async (event) => {
             forecast: forecast().then(d => d.json()).catch((error) => console.log(error)),
             emissions: emissions().then(d => d.json()).catch((error) => console.log(error)),
             generation_24h: generation_24h().then(d => d.json()).catch((error) => console.log(error)),
+            generationchart: generationchart().then(d => d.json()).catch((error) => console.log(error)),
+            emissionspiechart: emissionspiechart().then(d => d.json()).catch((error) => console.log(error)),
         },
     }
 }

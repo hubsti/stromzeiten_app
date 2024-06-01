@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import Chart from 'chart.js/auto';
 	import Stats from '$lib/components/Stats.svelte';
 	import Table from '$lib/components/Table.svelte';
 	import AreaChart from '$lib/components/AreaChart.svelte';
@@ -8,19 +7,18 @@
 	import EmissionsPieChart from '$lib/components/EmissionsPieChart.svelte';
 	import StackedAreaChart from '$lib/components/StackedAreaChart.svelte';
 	import {
-		calculateEnergyDifferences,
 		calculateEnergyPercentages,
 		formatDataForAreaChart,
 		formatDataForAreaChartGeneration,
 		formatDataForPieChart,
-		formatDataForPieChartEmissions
 	} from '$lib/utils/dataprocessor';
+
 	export let data: PageData;
+
 	$: generation24h = formatDataForAreaChartGeneration(data.streamed.generation_24h);
 	$: energyPercentagesResponse = calculateEnergyPercentages(data.streamed.generation);
-	$: energyDifffernceResponse = calculateEnergyDifferences(data.streamed.generation_diff);
-	$: emissionspiechartdata = formatDataForPieChartEmissions(data.streamed.emissions);
-	$: piechartdata = formatDataForPieChart(data.streamed.generation);
+	$: emissionspiechartdata = formatDataForPieChart(data.streamed.emissionspiechart);
+	$: piechartdata = formatDataForPieChart(data.streamed.generationchart);
 	$: areachartdata = formatDataForAreaChart(
 		data.streamed.carbon_intensity,
 		data.streamed.forecast,
@@ -50,7 +48,6 @@
 					labels={value.labels_sorted}
 					ceidata={value.ceiValues}
 					ceiPrediction={value.ceiPredictionValues}
-					
 				/>
 			{:catch error}
 				Error loading data
@@ -86,4 +83,3 @@
 		</div>
 	</div>
 </div>
-

@@ -7,19 +7,7 @@ export type User = {
     lastName: string;
 };
 
-export type Generation = {
-    index: string;
-    gas: number;
-    nuclear: number;
-    other: number;
-    waste: number;
-    biomass: number;
-    hydro_storage: number;
-    hydro: number;
-    wind_off: number;
-    wind_on: number;
-    country_code: string;
-};
+
 
 
 /*

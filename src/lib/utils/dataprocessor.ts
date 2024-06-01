@@ -3,16 +3,6 @@ interface ApiResponse {
     [key: string]: number;
 }
 
-interface ChartData {
-    group: string;
-    value: number;
-}
-
-interface ForecastApiResponse {
-    time: string;
-    Cei_prediction: number;
-}
-
 export interface LowestIntensityPeriod {
     start: string;
     end: string;
@@ -25,6 +15,7 @@ export interface GenerationApiResponse {
     waste: number;
     biomass: number;
     hydro_storage: number;
+    hydro_res: number;
     hydro: number;
     solar: number;
     wind_off: number;
@@ -32,74 +23,19 @@ export interface GenerationApiResponse {
     coal: number;
     lignite: number;
     oil: number;
+    other_renew: number;
 }
-
-export function formatDataForPieChartEmissions(dataPromise: Promise<any>): Promise<any> {
-    return dataPromise.then((jsonData) => {
-        // Sum up hydro and wind values
-        jsonData.hydro1 = (jsonData.Hydro_storage_CEI || 0) + (jsonData.Hydro_CEI || 0) + (jsonData.Hydro_res_CEI || 0);
-        jsonData.wind = (jsonData.Wind_off_CEI || 0) + (jsonData.Wind_on_CEI || 0);
-
-
-        // Remove original keys
-        delete jsonData.hydro_storage;
-        delete jsonData.hydro_res;
-        delete jsonData.wind_off;
-        delete jsonData.wind_on;
-        delete jsonData.hydro;
-        delete jsonData.index;
-        delete jsonData.country_code;
-        jsonData.hydro = jsonData.hydro1
-        delete jsonData.hydro1;
-
-        let newObject = {
-            biomass: jsonData.Biomass_CEI,
-            lignite: jsonData.Lignite_CEI,
-            gas: jsonData.Gas_CEI,
-            coal: jsonData.Coal_CEI,
-            oil: jsonData.Oil_CEI,
-            geothermal: jsonData.Geothermal_CEI,
-            hydro: jsonData.hydro,
-            nuclear: jsonData.Nuclear_CEI,
-            other: jsonData.Other_CEI,
-            other_renew: jsonData.Other_renew_CEI,
-            solar: jsonData.Solar_CEI,
-            waste: jsonData.Waste_CEI,
-            wind: jsonData.wind,
-        };
-        // @ts-ignore
-        let labels = Object.keys(newObject).filter(key => newObject[key] !== undefined);
-        // @ts-ignore
-        let valuesList = labels.map(key => parseFloat(newObject[key].toFixed(2)));
-        return { labels, valuesList };
-    });
-}
-
-
 
 export function formatDataForPieChart(dataPromise: Promise<any>): Promise<any> {
     return dataPromise.then((jsonData) => {
-        // Sum up hydro and wind values
-        jsonData.hydro1 = (jsonData.hydro || 0) + (jsonData.hydro_storage || 0) + (jsonData.hydro_res || 0);
-        jsonData.wind = (jsonData.wind_off || 0) + (jsonData.wind_on || 0);
 
-        // Remove original keys
-        delete jsonData.hydro_storage;
-        delete jsonData.hydro_res;
-        delete jsonData.wind_off;
-        delete jsonData.wind_on;
-        delete jsonData.hydro;
-        delete jsonData.index;
-        delete jsonData.country_code;
-        jsonData.hydro = jsonData.hydro1
-        delete jsonData.hydro1;
-        let labels = Object.keys(jsonData);
-        let valuesList = labels.map(key => parseFloat(jsonData[key].toFixed(2)));
+        const data = jsonData;
+        let labels = Object.keys(data).filter(key => data[key] !== undefined);
+        let valuesList = labels.map(key => parseFloat(data[key].toFixed(2)));
 
         return { labels, valuesList };
     });
 }
-
 
 
 export function formatDataForAreaChartGeneration(dataPromise: Promise<any>,): Promise<any> {
@@ -175,7 +111,7 @@ export function formatDataForAreaChart(dataPromise: Promise<any>, dataPromise2: 
 
 
 
-export function calculateEnergyPercentages(apiPromise: Promise<ApiResponse>): Promise<{ renewable: number, nonRenewable: number, nuclear: number }> {
+export function calculateEnergyPercentages(apiPromise: Promise<ApiResponse>) {
     // @ts-ignore
     return apiPromise.then((jsonData) => {
         const data = jsonData;
@@ -185,7 +121,7 @@ export function calculateEnergyPercentages(apiPromise: Promise<ApiResponse>): Pr
 
         let formatteddata = Object.fromEntries(entries);
 
-        const renewableSources: (keyof GenerationApiResponse)[] = ["biomass", "hydro_storage", "hydro", "solar", "wind_off", "wind_on"];
+        const renewableSources: (keyof GenerationApiResponse)[] = ["biomass", "hydro_storage", "hydro", "solar", "wind_off", "wind_on", "other_renew"];
         const nonRenewableSources: (keyof GenerationApiResponse)[] = ["gas", "other", "waste", "coal", "lignite", "oil"];
         const nuclearSources: (keyof GenerationApiResponse)[] = ["nuclear"];
 
@@ -199,7 +135,6 @@ export function calculateEnergyPercentages(apiPromise: Promise<ApiResponse>): Pr
         const renewablePercentage = Math.round((renewableEnergy / totalEnergy) * 100);
         const nonRenewablePercentage = Math.round((nonRenewableEnergy / totalEnergy) * 100);
         const nuclearPercentage = Math.round((nuclearEnergy / totalEnergy) * 100);
-
 
         return {
             renewable: renewablePercentage.toFixed(0),
@@ -221,7 +156,7 @@ export function calculateEnergyDifferences(apiPromise: Promise<ApiResponse>): Pr
 
         let formatteddata = Object.fromEntries(entries);
 
-        const renewableSources: (keyof GenerationApiResponse)[] = ["biomass", "hydro_storage", "hydro", "solar", "wind_off", "wind_on"];
+        const renewableSources: (keyof GenerationApiResponse)[] = ["biomass", "hydro_storage", "hydro", "solar", "wind_off", "wind_on", "other_renew"];
         const nonRenewableSources: (keyof GenerationApiResponse)[] = ["gas", "other", "waste", "coal", "lignite", "oil"];
         const nuclearSources: (keyof GenerationApiResponse)[] = ["nuclear"];
 

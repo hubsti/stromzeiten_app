@@ -7,10 +7,6 @@
 	import annotationPlugin from 'chartjs-plugin-annotation';
 	import { onMount } from 'svelte';
 
-
-
-
-
 	Chart.register(annotationPlugin);
 	export let labels;
 	export let ceidata;
@@ -83,7 +79,7 @@
 
 	const averageCEI = calculateAverage(ceidata);
 	const averageCEIPrediction = calculateAverage(ceiPrediction);
-	const BLUE_THRESHOLD = ((averageCEI + averageCEIPrediction) / 2)*0.9; //
+	const BLUE_THRESHOLD = ((averageCEI + averageCEIPrediction) / 2) * 0.9; //
 	threedayavg.set(BLUE_THRESHOLD);
 	const annotation = {
 		type: 'line',
@@ -206,6 +202,7 @@
 			},
 			options: {
 				responsive: true,
+				maintainAspectRatio: false,
 				scales: {
 					x: {
 						type: 'time',
@@ -261,18 +258,23 @@
 	}
 </script>
 
-<div class="card w-full bg-base-100 shadow">
+<div class="card w-full bg-base-100 shadow h-96 xl:h-full">
 	<div class="card-body">
 		<h2 class="card-title">Carbon Intensity</h2>
-		<div class="canvas-container">
-			<canvas bind:this={ctx} width="100" height="50" in:fade></canvas>
+
+		<div
+			class="canvas-container"
+			style="position: relative;   
+			height: 100%;
+  			width: 100%; "
+		>
+			<canvas bind:this={ctx} in:fade></canvas>
 		</div>
 	</div>
 </div>
 
 <style>
-
-html[data-theme='dark'] .canvas-container canvas {
-    filter: invert(1) hue-rotate(180deg);
-}
+	html[data-theme='dark'] .canvas-container canvas {
+		filter: invert(1) hue-rotate(180deg);
+	}
 </style>

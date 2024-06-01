@@ -8,7 +8,7 @@
 	const submitUpdateCountry: SubmitFunction = ({ action }) => {
 		const country = action.searchParams.get('country');
 	};
-	export let selectedOption: string;
+
 	import { onMount } from 'svelte';
 	import { themeChange } from 'theme-change';
 	function setThemeCheckbox() {
@@ -25,6 +25,7 @@
 		// 👆 false parameter is required for svelte
 	});
 </script>
+<div class="flex flex-col min-h-screen bg-base-200 justify-between">
 
 <div class="navbar w-full bg-base-100 shadow mb-5">
 	<div class="flex-1 px-2 lg:flex-none">
@@ -85,7 +86,7 @@
 						fill="none"
 						viewBox="0 0 24 24"
 						class="h-5 w-5 stroke-current md:hidden"
-			>
+					>
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -144,11 +145,15 @@
 	</div>
 </div>
 
-<slot />
-<footer
-	class="footer footer-center p-5 bg-base-200 text-base-content rounded bottom-0 left-0 w-full"
->
-	<aside>
-		<p>Made in Brussels 🇧🇪🇪🇺 with ❤️</p>
-	</aside>
-</footer>
+	<div class="flex-grow">
+		<!-- Your content here --><slot />
+	</div>
+
+	<footer
+		class="footer footer-center p-5 bg-base-100 text-base-content rounded bottom-0 left-0 w-full mt-7"
+	>
+		<aside>
+			<p>Made in Brussels 🇧🇪🇪🇺 with ❤️</p>
+		</aside>
+	</footer>
+</div>
