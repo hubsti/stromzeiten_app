@@ -257,8 +257,8 @@
 	}
 </script>
 
-<div class="card w-full bg-base-100 shadow h-96 xl:h-full">
-	<div class="card-body">
+<div class="card w-full bg-base-100 shadow flex flex-col h-96 xl:h-full">
+	<div class="card-body flex-grow">
 		<h2 class="card-title">Carbon Intensity</h2>
 
 		<div
