@@ -47,7 +47,6 @@ export async function GET(event: RequestEvent): Promise<Response> {
         }
 
 
-        // Remove specified keys
         const keysToRemove = ['renewables', 'nonrenewables', 'total'];
         keysToRemove.forEach(key => {
             delete currentData[key];
