@@ -33,6 +33,9 @@ export async function GET(event: RequestEvent): Promise<Response> {
 
 		const result = await client.query<IntensityData>(query, values);
 
+		if (country === 'Germany') {
+			result.rows.pop();
+		} 
 		event.setHeaders({
 			'cache-control': 'max-age=60'
 		});

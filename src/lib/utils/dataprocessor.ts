@@ -35,6 +35,10 @@ export function formatDataForAreaChartGeneration(dataPromise: Promise<Generation
             });
             return acc;
         }, {});
+        const valuesLength = Object.values(valuesBySource)[0]?.length || 0;
+        while (labels.length > valuesLength) {
+            labels.shift();
+        }
         return { labels, valuesBySource };
     });
 }

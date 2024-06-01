@@ -26,7 +26,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
             SELECT * FROM generation
             WHERE country_code = $1
             ORDER BY index DESC
-            LIMIT 2
+            LIMIT 3
         `;
         const queryParams = [countryCode];
 
@@ -35,9 +35,17 @@ export async function GET(event: RequestEvent): Promise<Response> {
         if (queryResult.rows.length < 2) {
             return json({ error: 'Not enough data available' }, { status: 404 });
         }
+        let currentData;
+        let previousData;
+        if (countryName === 'Germany') {
+            currentData = queryResult.rows[1];
+            previousData = queryResult.rows[2];
+        }
+        else {
+            currentData = queryResult.rows[0];
+            previousData = queryResult.rows[1];
+        }
 
-        const currentData = queryResult.rows[0];
-        const previousData = queryResult.rows[1];
 
         // Remove specified keys
         const keysToRemove = ['renewables', 'nonrenewables', 'total'];

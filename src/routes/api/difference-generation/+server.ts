@@ -26,7 +26,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
             SELECT * FROM generation
             WHERE country_code = $1
             ORDER BY index DESC
-            LIMIT 2
+            LIMIT 3
         `;
         const values = [countryCode];
 
@@ -55,20 +55,38 @@ export async function GET(event: RequestEvent): Promise<Response> {
         let oldValues = { renewable: 0, nonRenewable: 0, nuclear: 0 };
         let newValues = { renewable: 0, nonRenewable: 0, nuclear: 0 };
 
-        renewableSources.forEach(source => {
-            oldValues.renewable += generationResult.rows[1][source] || 0;
-            newValues.renewable += generationResult.rows[0][source] || 0;
-        });
+        if (country === 'Germany') {
+            renewableSources.forEach(source => {
+                oldValues.renewable += generationResult.rows[2][source] || 0;
+                newValues.renewable += generationResult.rows[1][source] || 0;
+            });
 
-        nonRenewableSources.forEach(source => {
-            oldValues.nonRenewable += generationResult.rows[1][source] || 0;
-            newValues.nonRenewable += generationResult.rows[0][source] || 0;
-        });
+            nonRenewableSources.forEach(source => {
+                oldValues.nonRenewable += generationResult.rows[2][source] || 0;
+                newValues.nonRenewable += generationResult.rows[1][source] || 0;
+            });
 
-        nuclearSources.forEach(source => {
-            oldValues.nuclear += generationResult.rows[1][source] || 0;
-            newValues.nuclear += generationResult.rows[0][source] || 0;
-        });
+            nuclearSources.forEach(source => {
+                oldValues.nuclear += generationResult.rows[2][source] || 0;
+                newValues.nuclear += generationResult.rows[1][source] || 0;
+            });
+        } else {
+            renewableSources.forEach(source => {
+                oldValues.renewable += generationResult.rows[1][source] || 0;
+                newValues.renewable += generationResult.rows[0][source] || 0;
+            });
+
+            nonRenewableSources.forEach(source => {
+                oldValues.nonRenewable += generationResult.rows[1][source] || 0;
+                newValues.nonRenewable += generationResult.rows[0][source] || 0;
+            });
+
+            nuclearSources.forEach(source => {
+                oldValues.nuclear += generationResult.rows[1][source] || 0;
+                newValues.nuclear += generationResult.rows[0][source] || 0;
+            });
+}
+
 
         const percentageChanges = {
             renewable: isNaN(((newValues.renewable - oldValues.renewable) / oldValues.renewable) * 100) ? '0' : (((newValues.renewable - oldValues.renewable) / oldValues.renewable) * 100).toFixed(0),

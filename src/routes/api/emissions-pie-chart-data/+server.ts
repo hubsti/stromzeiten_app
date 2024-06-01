@@ -26,7 +26,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
             SELECT * FROM "emissions"
             WHERE country_code = $1
             ORDER BY index DESC
-            LIMIT 1
+            LIMIT 2
         `;
         const queryParams = [countryCode];
 
@@ -35,8 +35,14 @@ export async function GET(event: RequestEvent): Promise<Response> {
         if (queryResult.rows.length === 0) {
             return json({ error: 'No data found for the specified country' }, { status: 404 });
         }
+        let emissionData;
 
-        const emissionData = queryResult.rows[0];
+        if (countryName === 'Germany') {
+            emissionData = queryResult.rows[1];
+        } else {
+            emissionData = queryResult.rows[0];
+        }
+
 
         // Remove specified keys
         const keysToRemove = ['Total_CEI', 'Carbon_Intensity_CEI'];
