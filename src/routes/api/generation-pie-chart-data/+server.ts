@@ -26,7 +26,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
             SELECT * FROM generation
             WHERE country_code = $1
             ORDER BY index DESC
-            LIMIT 1
+            LIMIT 2
         `;
         const queryParams = [countryCode];
 
@@ -36,7 +36,14 @@ export async function GET(event: RequestEvent): Promise<Response> {
             return json({ error: 'No data found for the specified country' }, { status: 404 });
         }
 
-        const generationData = queryResult.rows[0];
+
+        let generationData;
+
+        if (countryName === 'Germany') {
+            generationData = queryResult.rows[1];
+        } else {
+            generationData = queryResult.rows[0];
+        }
 
         // Remove specified keys
         const keysToRemove = ['renewables', 'nonrenewables', 'total'];

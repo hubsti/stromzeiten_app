@@ -40,7 +40,15 @@ export async function GET(event: RequestEvent): Promise<Response> {
 		}
 
 		const average = avgEmissionsResult.rows[0].average_cei;
-		const currentCEI = parseFloat(emissionsResult.rows[0].Carbon_Intensity_CEI.toFixed(0));
+		
+		let currentCEI 
+		
+		if (country === 'Germany') {
+			currentCEI =  parseFloat(emissionsResult.rows[1].Carbon_Intensity_CEI.toFixed(0));;
+		} else {
+			currentCEI = parseFloat(emissionsResult.rows[0].Carbon_Intensity_CEI.toFixed(0));;
+		}
+
 		const previousCEI = emissionsResult.rows[1].Carbon_Intensity_CEI;
 		const difference = (((currentCEI - previousCEI) / previousCEI) * 100).toFixed(0);
 
