@@ -1,51 +1,78 @@
+import type { RequestEvent } from '@sveltejs/kit';
+import type { IntensityData, AvgEmissionData } from '$lib/types';
 import client from '$lib/utils/db';
 import { json } from '@sveltejs/kit';
-import { european_countries } from '$lib/utils/countries';
+import { europeanCountries } from '$lib/utils/countries';
 
-export async function GET(event) {
+export async function GET(event: RequestEvent): Promise<Response> {
 	try {
-
 		const country = String(event.url.searchParams.get('country') ?? 'Belgium');
-		const countries_link: { [key: string]: string } = {};
-		european_countries.forEach(([name, code]) => {
-			countries_link[name] = code;
+		const countryCodes: { [key: string]: string } = {};
+
+		europeanCountries.forEach(([name, code]) => {
+			countryCodes[name] = code;
 		});
-		const country_code = countries_link[country as keyof typeof countries_link];
 
+		const countryCode = countryCodes[country];
+		if (!countryCode) {
+			return json({ error: 'Invalid country name' }, { status: 400 });
+		}
 
-		const result = await client.query(
-			`select index, "Carbon_Intensity_CEI", country_code from "emissions" where country_code='${country_code}' ORDER By index desc LIMIT 2`
-		);
-		const result2 = await client.query(
-			`SELECT * FROM avg_emissions_by_country3 WHERE country_code='${country_code}'`
-		);
+		const emissionsQuery = `
+            SELECT index, "Carbon_Intensity_CEI", country_code
+            FROM "emissions"
+            WHERE country_code = $1
+            ORDER BY index DESC
+            LIMIT 2
+        `;
+		const avgEmissionsQuery = `
+            SELECT average_cei
+            FROM avg_emissions_by_country3
+            WHERE country_code = $1
+        `;
+		const values = [countryCode];
 
-		const average = result2.rows[0].average_cei
-		const CEI = result.rows[0].Carbon_Intensity_CEI.toFixed(0);
-		result.rows[0].Carbon_Intensity_CEI = CEI;
-		const time = result.rows[0].index.toLocaleTimeString([], {
+		const emissionsResult = await client.query<IntensityData>(emissionsQuery, values);
+		const avgEmissionsResult = await client.query<AvgEmissionData>(avgEmissionsQuery, values);
+
+		if (emissionsResult.rows.length < 2) {
+			return json({ error: 'Not enough data available' }, { status: 404 });
+		}
+
+		const average = avgEmissionsResult.rows[0].average_cei;
+		const currentCEI = parseFloat(emissionsResult.rows[0].Carbon_Intensity_CEI.toFixed(0));
+		const previousCEI = emissionsResult.rows[1].Carbon_Intensity_CEI;
+		const difference = (((currentCEI - previousCEI) / previousCEI) * 100).toFixed(0);
+
+		const time = new Date(emissionsResult.rows[0].index).toLocaleTimeString([], {
 			hourCycle: 'h23',
 			hour: '2-digit',
 			minute: '2-digit'
 		});
-		result.rows[0].index = time;
+
+		emissionsResult.rows[0].Carbon_Intensity_CEI = currentCEI;
+		emissionsResult.rows[0].index = time;
 
 		event.setHeaders({
 			'cache-control': 'max-age=60'
 		});
 
+		const responseBody = {
+			time,
+			Carbon_Intensity_CEI: currentCEI.toString(),
+			country_code: countryCode,
+			difference,
+			average: average.toString()
+		};
 
-		const difference = (((result.rows[0].Carbon_Intensity_CEI - result.rows[1].Carbon_Intensity_CEI) / result.rows[1].Carbon_Intensity_CEI) * 100).toFixed(0)
-		const new_response = `{"time":"${time}", "Carbon_Intensity_CEI":"${CEI}","country_code":"${country_code}", "difference":"${difference}", "average":"${average}"}`
-
-		const response = new Response(new_response, {
+		return new Response(JSON.stringify(responseBody), {
 			status: 200,
 			headers: {
 				'Content-Type': 'application/json'
 			}
 		});
-		return response;
 	} catch (error) {
-		return json(error);
+		console.error('Error fetching emissions data:', error);
+		return json({ error: 'An error occurred while fetching the emissions data' }, { status: 500 });
 	}
 }

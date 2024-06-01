@@ -1,25 +1,31 @@
 <script lang="ts">
 	import { bluePeriodsStore } from '$lib/store';
 	import { DateTime } from 'luxon';
+	import { onDestroy } from 'svelte';
 
-	let bluePeriods: any[] = [];
+	interface BluePeriod {
+		start: string;
+		end: string;
+	}
 
-	// Subscribe to the store to get the blue periods
-	bluePeriodsStore.subscribe((value) => {
+	let bluePeriods: BluePeriod[] = [];
+	let unsubscribe: () => void;
+
+	unsubscribe = bluePeriodsStore.subscribe((value) => {
 		bluePeriods = value;
+	});
+
+	onDestroy(() => {
+		if (unsubscribe) unsubscribe();
 	});
 
 	function getDayOfWeek(dateStr: string) {
 		const isoStr = new Date(dateStr).toISOString();
-		let debug = DateTime.fromISO(isoStr).toFormat('cccc');
-
-		return debug;
+		return DateTime.fromISO(isoStr).toFormat('cccc')+", "+ DateTime.fromISO(isoStr).toFormat('d')+ " "+ DateTime.fromISO(isoStr).toFormat('LLLL');
 	}
 
-	// Helper function to get the day of the week
 
-	// Group periods by day of the week
-	$: periodsByDay = bluePeriods.reduce((acc, period) => {
+	$: periodsByDay = bluePeriods.reduce((acc: Record<string, BluePeriod[]>, period) => {
 		const day = getDayOfWeek(period.start);
 		if (!acc[day]) acc[day] = [];
 		acc[day].push(period);
@@ -27,7 +33,7 @@
 	}, {});
 </script>
 
-<div class="card w-96 bg-base-100 shadow h-max ">
+<div class="card w-96 bg-base-100 shadow h-max min-w-full">
 	<div class="card-body">
 		<h2 class="card-title">
 			Forecast 🔌

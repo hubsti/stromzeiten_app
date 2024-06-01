@@ -1,51 +1,68 @@
+import type { RequestEvent } from '@sveltejs/kit';
+import type { EmissionData } from '$lib/types';
 import client from '$lib/utils/db';
 import { json } from '@sveltejs/kit';
-import { european_countries } from '$lib/utils/countries';
-export async function GET(event) {
+import { europeanCountries } from '$lib/utils/countries';
+
+export async function GET(event: RequestEvent): Promise<Response> {
     try {
-
         const country = String(event.url.searchParams.get('country') ?? 'Belgium');
-        const countries_link: { [key: string]: string } = {};
-        european_countries.forEach(([name, code]) => {
-            countries_link[name] = code;
+        const countryCodes: { [key: string]: string } = {};
+
+        europeanCountries.forEach(([name, code]) => {
+            countryCodes[name] = code;
         });
-        const country_code = countries_link[country as keyof typeof countries_link];
 
+        const countryCode = countryCodes[country];
 
-        const result = await client.query(
-            `select * from  "emissions" where country_code='${country_code}' ORDER By index DESC LIMIT 1`
-        );
+        // Validate the country code
+        if (!countryCode) {
+            return json({ error: 'Invalid country name' }, { status: 400 });
+        }
 
+        // Use parameterized queries to prevent SQL injection
+        const query = `
+            SELECT * FROM "emissions"
+            WHERE country_code = $1
+            ORDER BY index DESC
+            LIMIT 1
+        `;
+        const values = [countryCode];
+
+        const result = await client.query<EmissionData>(query, values);
+
+        if (result.rows.length === 0) {
+            return json({ error: 'No data found for the specified country' }, { status: 404 });
+        }
+
+        const emissionData = result.rows[0];
 
         const keysToDelete = ['Total_CEI', 'Carbon_Intensity_CEI'];
 
-        // Loop through the keys and delete them from the object
+        // Remove specified keys from the object
         keysToDelete.forEach((key) => {
-            if (result.rows[0].hasOwnProperty(key)) {
-                delete result.rows[0][key];
-            }
+            delete emissionData[key];
         });
 
-        for (const key in result.rows[0]) {
-            if (result.rows[0].hasOwnProperty(key) && result.rows[0][key] === 0) {
-                delete result.rows[0][key];
+        // Remove keys with zero values
+        for (const key in emissionData) {
+            if (emissionData[key] === 0) {
+                delete emissionData[key];
             }
         }
+
         event.setHeaders({
             'cache-control': 'max-age=60'
         });
 
-        
-
-        const responseBody = JSON.stringify(result.rows[0]);
-        const response = new Response(responseBody, {
+        return new Response(JSON.stringify(emissionData), {
             status: 200,
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-        return response;
     } catch (error) {
-        return json(error);
+        console.error('Error fetching emission data:', error);
+        return json({ error: 'An error occurred while fetching the emission data' }, { status: 500 });
     }
 }

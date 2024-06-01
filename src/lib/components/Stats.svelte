@@ -5,10 +5,9 @@
 	export let emissions: Promise<any>;
 	export let energyPercentages: Promise<any>;
 	export let energyDifferences: Promise<any>;
-
+	
 	let threedayavgstat: number;
 
-	// Subscribe to the store to get the blue periods
 	threedayavg.subscribe((value) => {
 		threedayavgstat = Number(value);
 	});
@@ -16,15 +15,9 @@
 	const currentDate = new Date();
 	const formattedDate = currentDate.toLocaleString('en-GB', {
 		day: 'numeric',
-		//weekday: 'long',
-		//year: 'numeric',
 		month: 'long'
 	});
-	const formattedTime = currentDate.toLocaleString('en-GB', {
-		hour: 'numeric',
-		minute: 'numeric',
-		hour12: false
-	});
+
 </script>
 
 <div class="card bg-base-100 shadow">
@@ -34,7 +27,8 @@
 		{:else}
 		Carbon intensity in 🌍
 		{/if}
-		<div class="stats stats-vertical xl:stats-horizontal">
+		<div class="stats stats-vertical xl:stats-horizontal w-min-screen
+	">
 			<div class="stat">
 				<!-- <div class="stat-title">On 5th May 2023 at 14:00</div> -->
 				
@@ -79,7 +73,7 @@
 									</svg>
 								</div>
 							{:else if value.Carbon_Intensity_CEI < 1.2 * threedayavgstat && value.Carbon_Intensity_CEI >= 0.8 * threedayavgstat}
-								<div class="stat-value mx-6">Moderate</div>
+								<div class="stat-value mx-6">Average</div>
 								<div class="stat-figure text-warning mt-1">
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -148,11 +142,11 @@
 					<div>loading data</div>
 				{:then value}
 					<div class="flex flex-row">
-						<div class="stat-value">{value.nonRenewableabs} MW</div>
+						<div class="stat-value">{value.nonRenewableabs} <span class="text-lg">MW</span></div>
 						{#await energyDifferences}
 							<div>loading data</div>
 						{:then value}
-							<div class="badge badge badge-outline ml-3 mt-2">
+							<div class="badge badge badge-outline ml-1 xl:ml-4 mt-2">
 								{#if Math.round(value.nonRenewable) !== 0}
 									{value.nonRenewable >= 0 ? '↑' : '↓'} {Math.abs(value.nonRenewable).toFixed(0)}%
 								{:else}0%
@@ -199,11 +193,11 @@
 					<div>loading data</div>
 				{:then value}
 					<div class="flex flex-row">
-						<div class="stat-value">{value.renewableabs} MW</div>
+						<div class="stat-value">{value.renewableabs} <span class="text-lg">MW</span></div>
 						{#await energyDifferences}
 							<div>loading data</div>
 						{:then value}
-							<div class="badge badge badge-outline ml-4 mt-2">
+							<div class="badge badge badge-outline ml-1 xl:ml-4 mt-2">
 								{#if Math.round(value.renewable) !== 0}
 									{value.renewable >= 0 ? '↑' : '↓'} {Math.abs(value.renewable).toFixed(0)}%
 								{:else}
@@ -250,11 +244,11 @@
 					<div>loading data</div>
 				{:then value}
 					<div class="flex flex-row">
-						<div class="stat-value">{value.nuclearabs} MW</div>
+						<div class="stat-value">{value.nuclearabs} <span class="text-lg">MW</span></div>
 						{#await energyDifferences}
 							<div>loading data</div>
 						{:then value}
-							<div class="badge badge badge-outline ml-4 mt-2">
+							<div class="badge badge badge-outline ml-1 xl:ml-4 mt-2">
 								{#if Math.round(value.nuclear) !== 0}
 									{value.nuclear >= 0 ? '↑' : '↓'} {Math.abs(value.nuclear).toFixed(0)}%
 								{:else}

@@ -1,75 +1,45 @@
-import { validateUser, type User } from "$lib/types";
-import type { PageServerLoad } from "./$types";
-
+import type { PageServerLoad } from "../$types";
 
 export const load: PageServerLoad = async (event) => {
-    const newCountry = event.url.searchParams.get("country")
-    if (newCountry) {
-        event.cookies.set("country", newCountry, {
+    const queryCountry = event.url.searchParams.get("country");
+    const cookieCountry = event.cookies.get("country");
+
+    // Determine the country to use
+    const selectedCountry = queryCountry || cookieCountry || "Belgium";
+
+    // Set the country cookie if a new country is provided
+    if (queryCountry) {
+        event.cookies.set("country", queryCountry, {
             path: "/",
-            maxAge: 60 * 60 * 24 * 365,
+            maxAge: 60 * 60 * 24 * 365, // 1 year
         });
     }
-    const cookieCountry = event.cookies.get("country")
 
-    let new_country: string | null = null
+    // Fetch data from APIs
+    const fetchData = async (endpoint: string) => {
+        try {
+            const response = await event.fetch(endpoint);
+            if (!response.ok) throw new Error(`Failed to fetch ${endpoint}`);
+            return await response.json();
+        } catch (error) {
+            console.error(`Error fetching ${endpoint}:`, error);
+            return null;
+        }
+    };
 
-    if (newCountry) {
-        new_country = newCountry
-    }
-    else if (cookieCountry) {
-        new_country = cookieCountry
-    }
-    else {
-        new_country = "Belgium"
-    }
-
-    const generation = async () => {
-        const response = await event.fetch(`/api/generation?country=${new_country}`)
-        
-        return response
-    }
-
-    const carbon_intensity = async () => {
-        const response = await event.fetch(`/api/CEI?country=${new_country}`)
-        return response
-    }
-    const dashboard = async () => {
-        const response = await event.fetch(`/api/dashboard?country=${new_country}`)
-        return response
-    }
-    const generation_diff = async () => {
-        const response = await event.fetch(`/api/generation2?country=${new_country}`)
-        return response
-    }
-
-    const averge_cei = async () => {
-        const response = await event.fetch(`/api/average_cei?country=${new_country}`)
-        return response
-    }
-    const forecast = async () => {
-        const response = await event.fetch(`/api/forecast?country=${new_country}`)
-        return response
-    }
-    const emissions = async () => {
-        const response = await event.fetch(`/api/emissions?country=${new_country}`)
-        return response
-    }
-    const generation_24h = async () => {
-        const response = await event.fetch(`/api/generation_24h?country=${new_country}`)
-        return response
-    }
     return {
-        country: new_country,
+        selectedCountry,
         streamed: {
-            generation: generation().then(d => d.json()).catch((error) => console.log(error)),
-            carbon_intensity: carbon_intensity().then(d => d.json()).catch((error) => console.log(error)),
-            dashboard: dashboard().then(d => d.json()).catch((error) => console.log(error)),
-            generation_diff: generation_diff().then(d => d.json()).catch((error) => console.log(error)),
-            averge_cei: averge_cei().then(d => d.json()).catch((error) => console.log(error)),
-            forecast: forecast().then(d => d.json()).catch((error) => console.log(error)),
-            emissions: emissions().then(d => d.json()).catch((error) => console.log(error)),
-            generation_24h: generation_24h().then(d => d.json()).catch((error) => console.log(error)),
+            generationData: fetchData(`/api/current-generation?country=${selectedCountry}`),
+            carbonIntensityData: fetchData(`/api/carbon-intensity?country=${selectedCountry}`),
+            dashboardData: fetchData(`/api/dashboard?country=${selectedCountry}`),
+            generationDifferenceData: fetchData(`/api/difference-generation?country=${selectedCountry}`),
+            averageCeiData: fetchData(`/api/average-carbon-intensity?country=${selectedCountry}`),
+            forecastData: fetchData(`/api/emissions-forecast?country=${selectedCountry}`),
+            emissionsData: fetchData(`/api/emissions?country=${selectedCountry}`),
+            generation24hData: fetchData(`/api/24h-generation?country=${selectedCountry}`),
+            generationChartData: fetchData(`/api/generation-pie-chart-data?country=${selectedCountry}`),
+            emissionsPieChartData: fetchData(`/api/emissions-pie-chart-data?country=${selectedCountry}`),
         },
-    }
-}
+    };
+};

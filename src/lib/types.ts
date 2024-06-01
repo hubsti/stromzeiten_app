@@ -1,54 +1,70 @@
-export type User = {
-    id: number;
-    age: number;
-    height: number;
-    weight: number;
-    firstName: string;
-    lastName: string;
-};
 
-export type Generation = {
-    index: string;
-    gas: number;
-    nuclear: number;
-    other: number;
-    waste: number;
-    biomass: number;
-    hydro_storage: number;
-    hydro: number;
-    wind_off: number;
-    wind_on: number;
+export interface AvgEmissionsByCountry {
     country_code: string;
-};
-
-
-/*
-"index": "2024-01-13T16:00:00.000Z",
-    "gas": 2374,
-        "nuclear": 3980,
-            "other": 443,
-                "waste": 155,
-                    "biomass": 49,
-                        "hydro_storage": 93,
-                            "hydro": 7,
-                                "wind_off": 192,
-                                    "wind_on": 322,
-                                        "country_code": "BE"
-}*/
-export function validateUser(data: any): data is User {
-    const idValid = typeof data.id === "number";
-    const ageValid = typeof data.age === "number";
-    const heightValid = typeof data.height === "number";
-    const weightValid = typeof data.weight === "number";
-    const firstNameValid = typeof data.firstName === "string";
-    const lastNameValid = typeof data.lastName === "string";
-
-    return (
-        idValid &&
-        ageValid &&
-        heightValid &&
-        weightValid &&
-        firstNameValid &&
-        lastNameValid
-    );
+    avg_emission: number;
 }
+
+export interface AvgEmissionData {
+    average_cei: number;
+}
+
+export interface EmissionData {
+    Total_CEI?: number;
+    Carbon_Intensity_CEI?: number;
+    Biomass_CEI?: number;
+    Lignite_CEI?: number;
+    Gas_CEI?: number;
+    Coal_CEI?: number;
+    Oil_CEI?: number;
+    Geothermal_CEI?: number;
+    Hydro_storage_CEI?: number;
+    Hydro_CEI?: number;
+    Hydro_res_CEI?: number;
+    Nuclear_CEI?: number;
+    Other_CEI?: number;
+    Other_renew_CEI?: number;
+    Solar_CEI?: number;
+    Waste_CEI?: number;
+    Wind_off_CEI?: number;
+    Wind_on_CEI?: number;
+    index: string;
+    country_code: string;
+    [key: string]: any;
+}
+
+export interface GenerationData {
+    renewables?: number;
+    nonrenewables?: number;
+    total?: number;
+    biomass?: number;
+    lignite?: number;
+    gas?: number;
+    coal?: number;
+    oil?: number;
+    geothermal?: number;
+    hydro?: number;
+    hydro_storage?: number;
+    hydro_res?: number;
+    nuclear?: number;
+    other?: number;
+    other_renew?: number;
+    solar?: number;
+    waste?: number;
+    wind?: number;
+    wind_off?: number;
+    wind_on?: number;
+    index: string;
+    country_code: string;
+    [key: string]: any;
+}
+
+export interface IntensityData {
+    index: string;
+    Carbon_Intensity_CEI: number;
+}
+
+export interface ForecastData {
+    time: string;
+    Cei_prediction: number;
+}
+

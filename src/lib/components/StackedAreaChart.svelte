@@ -3,9 +3,6 @@
 	import Chart from 'chart.js/auto';
 	import 'chartjs-adapter-luxon';
 	import annotationPlugin from 'chartjs-plugin-annotation';
-	import { onMount } from 'svelte';
-
-
 
 	Chart.register(annotationPlugin);
 	export let labels;
@@ -51,6 +48,7 @@
 			},
 			options: {
 				responsive: true,
+				maintainAspectRatio: false,
 				scales: {
 					x: {
 						type: 'time',
@@ -101,11 +99,16 @@
 	}
 </script>
 
-<div class="card w-full bg-base-100 shadow h-full">
+<div class="card w-full bg-base-100 shadow h-96 xl:h-full">
 	<div class="card-body">
 		<h2 class="card-title">Hourly electricity production</h2>
-		<div class="canvas-container mt-8">
-			<canvas bind:this={ctx} width="100" height="50" in:fade></canvas>
+		<div
+			class="canvas-container mt-8"
+			style="position: relative;   
+			height: 100%;
+  			width: 100%; "
+		>
+			<canvas bind:this={ctx}  in:fade></canvas>
 		</div>
 	</div>
 </div>

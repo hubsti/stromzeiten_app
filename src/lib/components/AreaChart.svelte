@@ -1,21 +1,16 @@
 <script lang="ts">
 	import { bluePeriodsStore, threedayavg } from '$lib/store';
-	import { draw, fade } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 	import Chart, { type ChartArea } from 'chart.js/auto';
 	import 'chartjs-adapter-luxon';
 	import { DateTime } from 'luxon';
 	import annotationPlugin from 'chartjs-plugin-annotation';
-	import { onMount } from 'svelte';
-
-
-
-
 
 	Chart.register(annotationPlugin);
 	export let labels;
 	export let ceidata;
 	export let ceiPrediction;
-	let averagecei;
+
 
 	export const CHART_COLORS = {
 		red: 'rgb(255, 99, 132)',
@@ -83,7 +78,7 @@
 
 	const averageCEI = calculateAverage(ceidata);
 	const averageCEIPrediction = calculateAverage(ceiPrediction);
-	const BLUE_THRESHOLD = ((averageCEI + averageCEIPrediction) / 2)*0.9; //
+	const BLUE_THRESHOLD = ((averageCEI + averageCEIPrediction) / 2) * 0.9; //
 	threedayavg.set(BLUE_THRESHOLD);
 	const annotation = {
 		type: 'line',
@@ -206,6 +201,7 @@
 			},
 			options: {
 				responsive: true,
+				maintainAspectRatio: false,
 				scales: {
 					x: {
 						type: 'time',
@@ -261,18 +257,23 @@
 	}
 </script>
 
-<div class="card w-full bg-base-100 shadow">
-	<div class="card-body">
+<div class="card w-full bg-base-100 shadow flex flex-col h-96 xl:h-full">
+	<div class="card-body flex-grow">
 		<h2 class="card-title">Carbon Intensity</h2>
-		<div class="canvas-container">
-			<canvas bind:this={ctx} width="100" height="50" in:fade></canvas>
+
+		<div
+			class="canvas-container"
+			style="position: relative;   
+			height: 100%;
+  			width: 100%; "
+		>
+			<canvas bind:this={ctx} in:fade></canvas>
 		</div>
 	</div>
 </div>
 
 <style>
-
-html[data-theme='dark'] .canvas-container canvas {
-    filter: invert(1) hue-rotate(180deg);
-}
+	html[data-theme='dark'] .canvas-container canvas {
+		filter: invert(1) hue-rotate(180deg);
+	}
 </style>
