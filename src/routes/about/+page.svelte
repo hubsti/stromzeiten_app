@@ -1,6 +1,6 @@
 <div class="container h-full mx-auto bg-base-150">
 	<div class="prose prose-sm md:prose-base w-full max-w-4xl flex-grow pt-10">
-		<h1>About Stromzeiten</h1>
+		<h1 class='ml-4 xl:ml-0'>About Stromzeiten</h1>
 	</div>
 	<div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mt-10">
 		<div class="card w-full bg-base-100 shadow">
