@@ -28,12 +28,6 @@ export async function GET() {
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
-    <url>
-        <loc>https://example.com/blog</loc>
-        <lastmod>2024-07-03</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
-    </url>
 		</urlset>`.trim(),
 		{
 			headers: {
